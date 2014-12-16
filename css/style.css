@@ -1,0 +1,75 @@
+#subscriptions_container {
+	height:auto;
+}
+#subscriptions_container .call-flow {
+	background-color:#85AAB1;
+	text-align:center;
+	border-radius:10px;
+	padding: 4px 0 4px 0;
+	div {
+		color:#000;
+	}
+}
+
+td > .call-flow {
+	background-color:#85AAB1;
+	text-align:center;
+	border-radius:10px;
+	padding: 10px 0 4px 0;
+}
+
+#subscriptions_container .subscriptions-nav {
+	background-color:#523D26;
+	text-align:center;
+	border-radius:10px;
+	padding: 4px 0 4px 0;
+	font-size:1.3em;
+	a {
+		color:#000;
+	}
+}
+
+#subscriptions_container .portal_type {
+	background-color:white;
+	text-align:center;
+	border-radius:10px;
+	padding: 4px 0 4px 0;
+	font-size:1.3em;
+	text-decoration: none;
+	box-shadow: inset 0 0 5px #000, inset 0 0 5px #000, inset 0 0 5px #000;
+}
+
+#subscriptions_container .portal_type a:hover {
+		color:#000;
+	}
+
+#subscriptions_container .subscriptions-nav a:hover {
+	color: #fff;
+	}
+	
+.portal_table tr td {
+	margin:10px;
+	padding:10px;
+	box-shadow: inset 0 0 2px #000, inset 0 0 2px #000, inset 0 0 2px #000;
+}
+
+.portal_table tr td.expired {
+	color:green;
+}
+
+.portal_table tr td.declined {
+	color:red;
+}
+
+.portal_table tr td {
+	text-align:center;
+}
+
+.portal_table tr td a.actions {
+	background-color:#85AAB1;
+	color:white;
+	text-align:center;
+	padding:4px 9px 4px 9px;
+	border-radius:7px;
+	font-size:1.2em;
+}
