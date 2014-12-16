@@ -27,4 +27,4 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 
 add_action( 'wp_enqueue_scripts','manage_subscriptions_css_and_js');
 
-// HELLO WORLD
+// HELLO WORLD AGAIN!
