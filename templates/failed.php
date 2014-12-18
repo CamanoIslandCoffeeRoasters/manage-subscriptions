@@ -9,7 +9,81 @@
 	}
 	
 	function get_script($portal_type = "") {
-		echo "Hello Scripts!";
+		?>
+		
+		<div class="twocol-one"><h2>Declined</h2>
+		
+		Hi, is this <b> customer name </b> ? <br />
+		Hi, this is <b> name </b> with Camano Island Coffee Roasters. How are you doing today? <br />
+		<b> wait for reply </b> <br />
+		Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file. <br /> 
+		We just need to update your card and then we can get your next shipment out.<br /><br />
+		The card we have on file ends in <b> cc last four </b> and has an expiration date of <b> expiration date </b>. Would you like us to try running this card again or use a different card?<br />
+		<b>wait for reply. Make any changes necessary. </b><br />
+		
+		Alright, and your next shipment is set to go to  <b>confirm shipping address</b>. Is this correct? <br /> 
+		<b>wait for reply</b><br />
+		
+		<b>If confirmed correct: reprocess card -- wait to ensure it works</b>
+		
+		<b>If card DOES reprocess correctly</b>
+		
+		OK, great! We’ll get that next shipment right out to you. 
+		
+		Is there anything else I can do for you while you have me on the phone? <br /><br />
+		<b>wait for reply</b> <br />
+		
+		OK. Thank you again for drinking Camano Island Coffee and have a great day.<br />
+		<br /><br />
+		<b>If card does not process</b><br />
+		It looks like that card failed again. Do you have another card you’d like to use? <wait for reply>
+		
+		<Make any changes necessary>
+		
+		<reprocess card -- wait to ensure it works>
+			
+		</div>
+		
+		
+		<div class="twocol-one last"><h2>Expired</h2>
+		
+			Hi, is this <member’s name>? Hi, this is <insert your name here> with Camano Island Coffee Roasters. 
+			
+			How are you doing today? <wait for reply> Great! 
+			
+			The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file. 
+			
+			We just need to update your card and then we can get your next shipment out. The card we have on file ends in <insert last four here> and has an expiration date of <insert expiration date here>.
+			
+			Do you have an updated expiration date for that card or a new card you would like to use? <wait for reply> 
+			
+			<Make any changes necessary>
+			
+			Alright, and your next shipment is set to go to <confirm shipping address>. Is this correct? <wait for reply>
+			
+			<If confirmed correct: reprocess card -- wait to ensure it works>
+			
+			<If card DOES reprocess correctly>
+			
+			OK, great! We’ll get that next shipment right out to you. 
+			
+			Is there anything else I can do for you while you have me on the phone? <wait for reply>
+			
+			OK. 
+			
+			Thank you again for drinking Camano Island Coffee and have a great day.
+			####
+			<If card does not process>
+			It looks like that card failed again. Do you have another card you’d like to use? <wait for reply>
+			
+			<Make any changes necessary>
+			
+			<reprocess card -- wait to ensure it works>
+				
+			</div>
+
+				
+		<?php
 	}
 	
 	function get_orders($portal_type = "") {
@@ -25,6 +99,7 @@ function failed_table($portal_type) {
 		global $woocommerce, $wpdb;
 		
 		?>
+		<div id="data-table">
 		<table class="portal_table" width="100%" cellpadding="3" cellspacing="4">
 			<thead>
 				<th>Order #</th>
@@ -35,10 +110,12 @@ function failed_table($portal_type) {
 				<th>Failed Card</th>
 				<th>Actions</th>
 			</thead>
-			<tbody>
+			<tbody id="table-body">
 			<?php
 	
 			foreach ($order_ids as $order_id) :
+				
+				$subscription_id = get_post_meta($order_id, "subscription_id", TRUE);
 				
 				$failed_reason = "";
 				
@@ -58,8 +135,10 @@ function failed_table($portal_type) {
 						</a>
 					</td>
 					<td id="order_name">
-						<span id="first_name"><?php echo $_order->shipping_first_name ?></span>
-						<span id="last_name"><?php echo $_order->shipping_last_name ?></span>
+						<a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>">
+							<span id="first_name"><?php echo $_order->shipping_first_name ?></span>
+							<span id="last_name"><?php echo $_order->shipping_last_name ?></span>
+						</a>
 					</td>
 					<td class="order_email" id="order_email">
 						<?php echo $_order->billing_email ?>
@@ -70,8 +149,8 @@ function failed_table($portal_type) {
 					<td id="sub_cancel_date">
 						<?php echo date('Y-m-d', strtotime($_order->order_date)) ?>
 					</td>
-					<td id="sub_cancel_reason" class="<?php echo $failed_reason ?>">
-						<?php echo $_order->wc_authorize_net_cim_card_type . ' <b><u>' . $_order->wc_authorize_net_cim_card_last_four . '</u></b> ' . $_order->wc_authorize_net_cim_card_exp_date ?>
+					<td id="sub_cancel_reason" class="<?php echo $failed_reason ?>" >
+						<span title="<?php echo $failed_reason ?>"><?php echo $_order->wc_authorize_net_cim_card_type . ' <b><u>' . $_order->wc_authorize_net_cim_card_last_four . '</u></b> ' . $_order->wc_authorize_net_cim_card_exp_date ?></span>
 					</td>
 					<td class="action" id="<?php echo $_order->id ?>">
 						<a class="actions" href"">Open
@@ -82,6 +161,7 @@ function failed_table($portal_type) {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 		<?php
 	}
 
@@ -105,9 +185,9 @@ function failed_table($portal_type) {
 														<div class="sixcol-two" style="margin-bottom:0% !important;"> \
 															<select style="width:100%" name="disposition" id="disposition" required="required"> \
 																<option value=""> -- SELECT OUTCOME -- </option> \
-																<option value="updated">Update Card</option> \
-																<option value="voicemail">Voicemail</option> \
-																<option value="canceled">Cancel</option> \
+																<option value="updated">Updated Credit Card</option> \
+																<option value="voicemail">Left Voicemail</option> \
+																<option value="canceled">Delete Order, Set Club to Canceled</option> \
 															</select> \
 														</div> \
 														<div class="sixcol-three" style="margin-bottom:0% !important;"> \
@@ -143,12 +223,12 @@ function failed_table($portal_type) {
 					$('#row-'+order_id).remove();
 					$('#failed_order_'+order_id).remove();
 					$('div#copyright').replaceWith('<div id="copyright" class="col-left"><h2>Order #'+order_id+' Finished</h2></div>');
-					$('#copyright').delay(2000).fadeTo(3000, 0.01);
+					$('#copyright').delay(3000).fadeTo(3000, 0.01);
 				});
 			});
 			$('#disposition').live('change', function(event) {
-				first_name = $(this).prevAll('#first_name').text();
-				console.log($(this).prevAll('#first_name').text());
+				first_name = $(this).prevAll('#first_name:first').text();
+
 				switch ($(this).val()) {
 					case "updated":
 						$('#email').val('Dear '+first_name+', Thank you for taking my call. We\'re very glad to update your card and get some coffee to you. Thank you for continuing to support uor farmers with your daily cup of coffee!');
@@ -162,9 +242,10 @@ function failed_table($portal_type) {
 						$('#email').val('Dear '+first_name+', consider yourself canceled!');
 						$('#disposition').after('<br /><br /><select name="cancel_reason" style="width:100%" required="required"> \
 													<option value=""> -- REASON FOR CANCELING -- </option> \
-													<option value="nasty">Nasty</option> \
-													<option value="gross">Gross</option> \
-													<option value="eeeeew">Eeeeew</option> \
+													<option value="finances">Finances</option> \
+													<option value="health">Health</option> \
+													<option value="moving">Moving</option> \
+													<option value="upset">Upset</option> \
 												 </select> \
 												');
 					break;

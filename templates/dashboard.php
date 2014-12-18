@@ -13,13 +13,13 @@ if ( !empty($current_user->roles) ) :
 <div id="subscriptions_container">
 
 	<div class="threecol-one <?php echo ($portal_type == 'reactivate') ? 'portal_type': 'subscriptions-nav' ?>">
-		<a href="//camanoislandcoffee.com/portal/?portal_type=reactivate">Reactivations</a>
+		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=reactivate">Reactivations</a>
 	</div>
 	<div class="threecol-one <?php echo ($portal_type == 'failed') ? 'portal_type': 'subscriptions-nav' ?>">
-		<a href="//camanoislandcoffee.com/portal/?portal_type=failed">Failed Orders</a>
+		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=failed">Failed Orders</a>
 	</div>
 	<div class="threecol-one last <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
-		<a href="//camanoislandcoffee.com/portal/?portal_type=expired">Expired Cards</a>
+		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=expired">Expired Cards</a>
 	</div>
 
 	<hr /><hr />
@@ -43,7 +43,6 @@ if ( !empty($current_user->roles) ) :
 	</div>
 	
 	<div id="script_content" style="display:none;">
-		<h4>Here is a script to read</h4>
 		<?php echo get_script($portal_type); ?>
 	</div>
 	
@@ -62,7 +61,10 @@ if ( !empty($current_user->roles) ) :
 	else: echo "You do not have sufficient permissions to view this page";
 	endif;
 else: echo "You must be logged in to view this page. ";
-echo '<a href="http://camanoislandcoffee.com/wp-login.php?redirect_to=http%3A%2F%2Fcamanoislandcoffee.com%2Fportal">Login here</a>';
+?>
+ <a href="<?php echo wp_login_url(site_url('/portal')) ?>">Login here</a> 
+ 
+<?php 
 endif;
 
 ?>
@@ -85,14 +87,15 @@ endif;
 			break;
 			
 			case "failed":
-				$data = $wpdb->get_col("SELECT posts.ID 
+				$data = $wpdb->get_col("SELECT distinct(posts.ID) 
 										FROM {$wpdb->posts} posts 
 										LEFT JOIN {$wpdb->postmeta} meta 
 										ON meta.post_id = posts.ID 
 										WHERE posts.post_type = 'shop_order' 
 										AND posts.post_status = 'wc-failed' 
-										AND meta.meta_key = 'last_contact' 
-										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-3 months')). "'  
+										AND ((meta.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_last'))
+										OR (meta.meta_key = 'contact_last' 
+										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-3 months')). "')) 
 										ORDER BY posts.post_date DESC 
 										LIMIT 0, 10");
 			break;
