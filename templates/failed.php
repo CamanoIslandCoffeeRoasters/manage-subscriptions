@@ -10,77 +10,60 @@
 	
 	function get_script($portal_type = "") {
 		?>
+		<?php global $current_user; ?>
 		
-		<div class="twocol-one"><h2>Declined</h2>
-		
-		Hi, is this <b> customer name </b> ? <br />
-		Hi, this is <b> name </b> with Camano Island Coffee Roasters. How are you doing today? <br />
-		<b> wait for reply </b> <br />
-		Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file. <br /> 
-		We just need to update your card and then we can get your next shipment out.<br /><br />
-		The card we have on file ends in <b> cc last four </b> and has an expiration date of <b> expiration date </b>. Would you like us to try running this card again or use a different card?<br />
-		<b>wait for reply. Make any changes necessary. </b><br />
-		
-		Alright, and your next shipment is set to go to  <b>confirm shipping address</b>. Is this correct? <br /> 
-		<b>wait for reply</b><br />
-		
-		<b>If confirmed correct: reprocess card -- wait to ensure it works</b>
-		
-		<b>If card DOES reprocess correctly</b>
-		
-		OK, great! We’ll get that next shipment right out to you. 
-		
-		Is there anything else I can do for you while you have me on the phone? <br /><br />
-		<b>wait for reply</b> <br />
-		
-		OK. Thank you again for drinking Camano Island Coffee and have a great day.<br />
-		<br /><br />
-		<b>If card does not process</b><br />
-		It looks like that card failed again. Do you have another card you’d like to use? <wait for reply>
-		
-		<Make any changes necessary>
-		
-		<reprocess card -- wait to ensure it works>
-			
+		<div class="twocol-one" ><h2 style="color:red;">Declined</h2>
+			<li>Hi, is this <b>customer name</b>?</li>
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters. How are you doing today?</li>
+			<li><b>Wait for reply</b></li>
+			<li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li> 
+			<li>We just need to update your card and then we can get your next shipment out.</li> 
+			<li>The card we have on file ends in <b> cc last four </b> and has an expiration date of <b>expiration date</b>. Would you like us to try running this card again or use a different card?</li> 
+			<li><b>Wait for reply. Make any changes necessary.</b></li> 
+			<li>Alright, and your next shipment is set to go to <b>confirm shipping address</b>. Is this correct?</li>  
+			<li><b>Wait for reply</b></li> 
+			<li><b>If confirmed correct: reprocess card -- wait to ensure it works</b></li>
+			<li><u>If card DOES reprocess correctly</u></li>	
+			<li>OK, great! We’ll get that next shipment right out to you.		
+			<li>Is there anything else I can do for you while you have me on the phone? <br /></li>
+			<li><b>Wait for reply</b></li>	
+			<li>OK. Thank you again for drinking Camano Island Coffee and have a great day.</li>
+			<li><u>If card does NOT process</u></li>
+			<li>It looks like that card failed again. Do you have another card you’d like to use?</li>
+			<li>Wait for reply. Make any changes necessary.</li>
+			<li><b>Reprocess card -- wait to ensure it works</b></li>
 		</div>
 		
-		
-		<div class="twocol-one last"><h2>Expired</h2>
-		
-			Hi, is this <member’s name>? Hi, this is <insert your name here> with Camano Island Coffee Roasters. 
-			
-			How are you doing today? <wait for reply> Great! 
-			
-			The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file. 
-			
-			We just need to update your card and then we can get your next shipment out. The card we have on file ends in <insert last four here> and has an expiration date of <insert expiration date here>.
-			
-			Do you have an updated expiration date for that card or a new card you would like to use? <wait for reply> 
-			
-			<Make any changes necessary>
-			
-			Alright, and your next shipment is set to go to <confirm shipping address>. Is this correct? <wait for reply>
-			
-			<If confirmed correct: reprocess card -- wait to ensure it works>
-			
-			<If card DOES reprocess correctly>
-			
-			OK, great! We’ll get that next shipment right out to you. 
-			
-			Is there anything else I can do for you while you have me on the phone? <wait for reply>
-			
-			OK. 
-			
-			Thank you again for drinking Camano Island Coffee and have a great day.
-			####
-			<If card does not process>
-			It looks like that card failed again. Do you have another card you’d like to use? <wait for reply>
-			
-			<Make any changes necessary>
-			
-			<reprocess card -- wait to ensure it works>
-				
-			</div>
+		<div class="twocol-one last">
+			<h2 style="color:green;">Expired</h2>
+			<li>Hi, is this <b> customer name </b> ? </li>
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters. How are you doing today? </li>
+			<li><b>Wait for reply</b></li>
+			<li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li>
+			<li>We just need to update your card and then we can get your next shipment out. The card we have on file ends in -- insert last four -- and has an expiration date of  -- insert expiration date --.</li>
+			<li>Do you have an updated expiration date for that card or a new card you would like to use?</li>
+			<li><b>Wait for reply. Make any changes necessary</b></li>
+			<li>Alright, and your next shipment is set to go to -- confirm shipping address --. Is this correct?</li>
+			<li><b>Wait for reply</b></li>
+			<li>If confirmed correct: reprocess card -- wait to ensure it works</li>
+			<li><u>If card DOES reprocess correctly</u></li>
+			<li>OK, great! We’ll get that next shipment right out to you.</li>
+			<li>Is there anything else I can do for you while you have me on the phone?</li>
+			<li><b>Wait for reply</b></li>
+			<li>OK.	Thank you again for drinking Camano Island Coffee and have a great day.</li>
+			<li><u>If card does NOT process</u></li>
+			<li>It looks like that card failed again. Do you have another card you’d like to use?</li> 
+			<li><b>Wait for reply. Make any changes necessary</b></li>
+			<li><u>reprocess card -- wait to ensure it works</u></li>
+			<br />
+			<br />
+			<h2>Voicemail</h2>
+			<li>This is a message for <b>customer name</b>.</li> 
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters.</li> 
+			<li>Unfortunately your last coffee shipment failed to process due to an issue with your card on file.</li>
+			<li>We just need to update your card and then we can get your next shipment out. Please give us a call back at 866-387-5282</li>
+			<li>Thank you and have a nice day.</li>
+		</div>
 
 				
 		<?php
@@ -136,8 +119,8 @@ function failed_table($portal_type) {
 					</td>
 					<td id="order_name">
 						<a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>">
-							<span id="first_name"><?php echo $_order->shipping_first_name ?></span>
-							<span id="last_name"><?php echo $_order->shipping_last_name ?></span>
+							<span id="first_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_first_name ?></span>
+							<span id="last_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_last_name ?></span>
 						</a>
 					</td>
 					<td class="order_email" id="order_email">
@@ -191,7 +174,7 @@ function failed_table($portal_type) {
 															</select> \
 														</div> \
 														<div class="sixcol-three" style="margin-bottom:0% !important;"> \
-															<textarea name="email_content" id="email" rows="5" cols="40"></textarea> \
+															<textarea name="email_content" id="email" rows="15" cols="50"></textarea> \
 														</div> \
 														<div class="sixcol-one last" style="margin-bottom:0% !important;"> \
 															<input name="sub" id="submit_reactivation" type="submit" value="submit" /> \
@@ -227,19 +210,19 @@ function failed_table($portal_type) {
 				});
 			});
 			$('#disposition').live('change', function(event) {
-				first_name = $(this).prevAll('#first_name:first').text();
-
+				first_name = $('#first_name_'+order_id).html();
+				console.log(first_name);
 				switch ($(this).val()) {
 					case "updated":
-						$('#email').val('Dear '+first_name+', Thank you for taking my call. We\'re very glad to update your card and get some coffee to you. Thank you for continuing to support uor farmers with your daily cup of coffee!');
+						$('#email').val('Dear '+first_name+',\nThank you for taking my call today. I’m glad we were able to update your card and get your coffee shipped out. If you need to make any future edits to your account, you can do so in your My Account at this url: www.camanoislandcoffee.com/my-account . Also, if you need any help with your account, please give us a call at (866) 387-5282. Thank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
 					break;
 					
 					case "voicemail":
-						$('#email').val('Dear '+first_name+', consider yourself voicemailed!');
+						$('#email').val('Dear '+first_name+',\nMy name is with Camano Island Coffee Roasters. I left you a quick voicemail regarding your account. Your card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at your earliest convenience. Please call us at (866) 387-5282. Thank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
 					break;
 					
 					case "canceled":
-						$('#email').val('Dear '+first_name+', consider yourself canceled!');
+						$('#email').val('Dear '+first_name+',\nThank you for taking my call today. I have cancelled your Coffee Lover’s Club. You will no longer receive any new orders.\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at (866) 387-5282.\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
 						$('#disposition').after('<br /><br /><select name="cancel_reason" style="width:100%" required="required"> \
 													<option value=""> -- REASON FOR CANCELING -- </option> \
 													<option value="finances">Finances</option> \

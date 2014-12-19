@@ -67,6 +67,8 @@
 			
 			endif;
 			
+			$_order->update_status('wc-cancelled');
+			
 						$message = json_encode(
 								array( 
 									"order" 			=> $_order, 
