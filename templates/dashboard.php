@@ -95,9 +95,9 @@ endif;
 										AND posts.post_status = 'wc-failed' 
 										AND ((meta.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_last'))
 										OR (meta.meta_key = 'contact_last' 
-										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-3 months')). "')) 
+										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-7 days')). "')) 
 										ORDER BY posts.post_date DESC 
-										LIMIT 0, 10");
+										LIMIT 0, 40");
 			break;
 			
 			case "expired":

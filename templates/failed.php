@@ -170,7 +170,9 @@ function failed_table($portal_type) {
 																<option value=""> -- SELECT OUTCOME -- </option> \
 																<option value="updated">Updated Credit Card</option> \
 																<option value="voicemail">Left Voicemail</option> \
-																<option value="canceled">Delete Order, Set Club to Canceled</option> \
+																<option value="canceled">Cancel Subscription</option> \
+																<option value="email">Email</option> \
+																<option value="unreachable">Unreachable</option> \
 															</select> \
 														</div> \
 														<div class="sixcol-three" style="margin-bottom:0% !important;"> \
@@ -211,19 +213,23 @@ function failed_table($portal_type) {
 			});
 			$('#disposition').live('change', function(event) {
 				first_name = $('#first_name_'+order_id).html();
-				console.log(first_name);
+				if ($('#cancel_reason').length > 0) {
+					$('#cancel_reason').remove();
+				}
+				
 				switch ($(this).val()) {
 					case "updated":
-						$('#email').val('Dear '+first_name+',\nThank you for taking my call today. I’m glad we were able to update your card and get your coffee shipped out. If you need to make any future edits to your account, you can do so in your My Account at this url: www.camanoislandcoffee.com/my-account . Also, if you need any help with your account, please give us a call at (866) 387-5282. Thank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: www.camanoislandcoffee.com/my-account .\n\nAlso, if you need any help with your account, please give us a call at (866) 387-5282.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
 					break;
 					
 					case "voicemail":
-						$('#email').val('Dear '+first_name+',\nMy name is with Camano Island Coffee Roasters. I left you a quick voicemail regarding your account. Your card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at your earliest convenience. Please call us at (866) 387-5282. Thank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with Camano Island Coffee Roasters. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at (866) 387-5282 at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
 					break;
 					
 					case "canceled":
-						$('#email').val('Dear '+first_name+',\nThank you for taking my call today. I have cancelled your Coffee Lover’s Club. You will no longer receive any new orders.\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at (866) 387-5282.\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
-						$('#disposition').after('<br /><br /><select name="cancel_reason" style="width:100%" required="required"> \
+						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at (866) 387-5282.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#disposition').after('<br /><br /> \
+												<select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
 													<option value=""> -- REASON FOR CANCELING -- </option> \
 													<option value="finances">Finances</option> \
 													<option value="health">Health</option> \
@@ -231,6 +237,14 @@ function failed_table($portal_type) {
 													<option value="upset">Upset</option> \
 												 </select> \
 												');
+					break;
+					
+					case "email":
+						$('#email').val('Dear '+first_name+',\n\nThere seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at (866) 387-5282, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+					break;
+					
+					case "unreachable":
+						$('#email').val('Customer Unreachable.');
 					break;
 					
 					default: "";
