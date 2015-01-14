@@ -9,9 +9,6 @@ Version: 1.0.0
 
 define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) ));
 
-//include MANAGE_SUBSCRIPTIONS . '/css/style.css';
-
-
 			if ( !is_admin() ) {
 				function manage_subscriptions_css_and_js() {
 					wp_register_style('manage_subscriptions_css', plugins_url('css/style.css',__FILE__ ));
@@ -22,9 +19,4 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 				}
 			}
 
-
-
-
 add_action( 'wp_enqueue_scripts','manage_subscriptions_css_and_js');
-
-// HELLO WORLD AGAIN!

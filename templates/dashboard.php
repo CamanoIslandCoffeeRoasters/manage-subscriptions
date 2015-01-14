@@ -101,16 +101,13 @@ endif;
 			break;
 			
 			case "expired":
-				$data = $wpdb->get_col("SELECT meta_value as user_id 
-										FROM {$wpdb->postmeta} 
-										WHERE meta_key = '_customer_user' 
-										AND post_id IN 
-											(SELECT post_id 
-											FROM {$wpdb->postmeta} 
-											WHERE meta_key = '_wc_authorize_net_cim_card_exp_date' 
-											AND meta_value 
-											REGEXP '/14$') 
-										LIMIT 0, 10");
+				$complete_search = check_expired_cards();
+
+				$data = $wpdb->get_col("SELECT user_id 
+										FROM {$wpdb->usermeta}
+										WHERE meta_key = '_wc_authorize_net_cim_payment_profiles'
+										AND meta_value REGEXP '$complete_search'	
+									");
 			break;
 				
 			default: $data = "";
@@ -119,3 +116,49 @@ endif;
 		return $data;
 	}
 
+
+	function check_expired_cards() {
+
+			// 2 digit year i.e. 2015 would be 15
+			$this_year = date('y');
+			// 2 digit last year i.e. 2014 would be 14
+			$last_year = date('y', strtotime('-1 year'));
+			// 2 digit month i.e. September would be 09
+			$this_month = date('m');
+			
+			// checks if the first digit of the month is a 0 or 1 (Jan - Sept, or October - December)
+			$months = substr($this_month, 0, 1) ;
+			// Pre-populate query for last year, since it's static (note pipe at the end) 
+			$search_last_year = "0[1-9]/$last_year|1[0-2]/$last_year|";
+			
+			// Depending on whether we're above or below 10 
+			switch ($months) {
+				// Below 10
+				case '0':
+					// Check the second digit of the month
+					$month = substr($this_month, -1, 1);
+					// TRUE: If it's above 1, we need to add a "-" character to separate it from the other
+					// FALSE: If it's equal to 1, only search for 0[1] in the Regexp string
+					$month > 1 ? $month = "1-$month" : $month = '1' ;
+					// Add month to brackets, and tack on the 2 digit year on the end
+					$search_this_year = "0[$month]/$this_year";
+				break;
+				// Above 10
+				case '1':
+					// Check the second digit of the month
+					$month = substr($this_month, -1, 1);
+					// TRUE: If it's above 0, we need to add a "-" character to separate it from the other
+					// FALSE: If it's equal to 0, only search for 1[0] in the Regexp string
+					$month > 0 ? $month = "0-$month" : $month = '0' ;
+					// Add first 9 months, add the 10 (and above) brackets, and tack on the 2 digit year on the end
+					$search_this_year = "0[1-9]/$this_year|1[$month]/$this_year";
+				break;
+				default: '';
+				break;
+			}
+			// Append search for last year and this year into one for SQL search
+			$complete_search = $search_last_year . $search_this_year;
+			 
+		return $complete_search; 
+		
+	}
