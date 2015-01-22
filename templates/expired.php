@@ -48,7 +48,7 @@
 					<td id="sub_id"><a href="<?php echo get_option('siteurl') ?>/wp-admin/user-edit.php?user_id=<?php echo $_user->ID ?>" target="_blank"><?php echo $_user->ID ?></a></td>
 					<td id="sub_name"><?php echo $_user->display_name ?></td>
 					<td class="sub_email" id="sub_email"><?php echo $_user->user_email ?></td>
-					<td id="sub_phone"><span onclick="this.focus();this.select();"><?php echo $_user->billing_phone ? str_replace(array('-', '.', ' '), '', $_user->billing_phone) : str_replace(array('-', '.', ' '), '', $_user->shipping_phone) ?></span></td>
+					<td id="sub_phone"><span onclick="this.focus();this.select();"><?php echo $_user->billing_phone ? str_replace(array('-', '.', ' ', '(', ')'), '', $_user->billing_phone) : str_replace(array('-', '.', ' '), '', $_user->shipping_phone) ?></span></td>
 					<td id="sub_cancel_date"><?php echo $profile_id ?></td>
 					<td id="sub_cancel_reason" class="<?php echo $failed_reason ?>">
 							<?php foreach ($payment_profiles as $profile_id => $_profile) :

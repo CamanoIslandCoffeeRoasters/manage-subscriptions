@@ -11,10 +11,11 @@
 	function get_script($portal_type = "") {
 		?>
 		<?php global $current_user; ?>
+		<?php $woo_options = get_option('woo_options'); ?>
 		
 		<div class="twocol-one" ><h2 style="color:red;">Declined</h2>
 			<li>Hi, is this <b>customer name</b>?</li>
-			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters. How are you doing today?</li>
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>. How are you doing today?</li>
 			<li><b>Wait for reply</b></li>
 			<li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li> 
 			<li>We just need to update your card and then we can get your next shipment out.</li> 
@@ -27,7 +28,7 @@
 			<li>OK, great! We’ll get that next shipment right out to you.		
 			<li>Is there anything else I can do for you while you have me on the phone? <br /></li>
 			<li><b>Wait for reply</b></li>	
-			<li>OK. Thank you again for drinking Camano Island Coffee and have a great day.</li>
+			<li>OK. Thank you again for drinking <?php echo get_option('blogname') ?> and have a great day.</li>
 			<li><u>If card does NOT process</u></li>
 			<li>It looks like that card failed again. Do you have another card you’d like to use?</li>
 			<li>Wait for reply. Make any changes necessary.</li>
@@ -37,7 +38,7 @@
 		<div class="twocol-one last">
 			<h2 style="color:green;">Expired</h2>
 			<li>Hi, is this <b> customer name </b> ? </li>
-			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters. How are you doing today? </li>
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>. How are you doing today? </li>
 			<li><b>Wait for reply</b></li>
 			<li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li>
 			<li>We just need to update your card and then we can get your next shipment out. The card we have on file ends in -- insert last four -- and has an expiration date of  -- insert expiration date --.</li>
@@ -50,7 +51,7 @@
 			<li>OK, great! We’ll get that next shipment right out to you.</li>
 			<li>Is there anything else I can do for you while you have me on the phone?</li>
 			<li><b>Wait for reply</b></li>
-			<li>OK.	Thank you again for drinking Camano Island Coffee and have a great day.</li>
+			<li>OK.	Thank you again for drinking <?php echo get_option('blogname') ?> and have a great day.</li>
 			<li><u>If card does NOT process</u></li>
 			<li>It looks like that card failed again. Do you have another card you’d like to use?</li> 
 			<li><b>Wait for reply. Make any changes necessary</b></li>
@@ -59,9 +60,9 @@
 			<br />
 			<h2>Voicemail</h2>
 			<li>This is a message for <b>customer name</b>.</li> 
-			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with Camano Island Coffee Roasters.</li> 
+			<li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>.</li> 
 			<li>Unfortunately your last coffee shipment failed to process due to an issue with your card on file.</li>
-			<li>We just need to update your card and then we can get your next shipment out. Please give us a call back at 866-387-5282</li>
+			<li>We just need to update your card and then we can get your next shipment out. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?></li>
 			<li>Thank you and have a nice day.</li>
 		</div>
 
@@ -80,6 +81,8 @@
 function failed_table($portal_type) {
 		$order_ids = get_data($portal_type);
 		global $woocommerce, $wpdb;
+		
+		$woo_options = get_option('woo_options');
 		
 		?>
 		<div id="data-table">
@@ -127,7 +130,7 @@ function failed_table($portal_type) {
 						<?php echo $_order->billing_email ?>
 					</td>
 					<td id="sub_phone">
-						<?php echo $_order->billing_phone ? str_replace(array('-', '.', ' '), '', $_order->billing_phone) : str_replace(array('-', '.', ' '), '', get_user_meta($_order->customer_user, "billing_phone", TRUE)) ?>
+						<?php echo $_order->billing_phone ? str_replace(array('-', '.', ' ', '(', ')'), '', $_order->billing_phone) : str_replace(array('-', '.', ' ', '(', ')'), '', get_user_meta($_order->customer_user, "billing_phone", TRUE)) ?>
 					</td>
 					<td id="sub_cancel_date">
 						<?php echo date('Y-m-d', strtotime($_order->order_date)) ?>
@@ -219,15 +222,15 @@ function failed_table($portal_type) {
 				
 				switch ($(this).val()) {
 					case "updated":
-						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: www.camanoislandcoffee.com/my-account .\n\nAlso, if you need any help with your account, please give us a call at (866) 387-5282.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: <?php echo site_url( '/my-account' ); ?> .\n\nAlso, if you need any help with your account, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
 					break;
 					
 					case "voicemail":
-						$('#email').val('Dear '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with Camano Island Coffee Roasters. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at (866) 387-5282 at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with Camano Island Coffee you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?> at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
 					break;
 					
 					case "canceled":
-						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at (866) 387-5282.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
 						$('#disposition').after('<br /><br /> \
 												<select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
 													<option value=""> -- REASON FOR CANCELING -- </option> \
@@ -235,12 +238,14 @@ function failed_table($portal_type) {
 													<option value="health">Health</option> \
 													<option value="moving">Moving</option> \
 													<option value="upset">Upset</option> \
+													<option value="unreachable">Unreachable</option> \
+													<option value="other">Other</option> \
 												 </select> \
 												');
 					break;
 					
 					case "email":
-						$('#email').val('Dear '+first_name+',\n\nThere seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at (866) 387-5282, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>');
+						$('#email').val('Dear '+first_name+',\n\nThere seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
 					break;
 					
 					case "unreachable":
