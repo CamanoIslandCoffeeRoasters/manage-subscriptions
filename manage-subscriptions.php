@@ -20,10 +20,15 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 			}
 	
 	
-	add_action( 'wp_enqueue_scripts','manage_subscriptions_css_and_js');
+	 add_action( 'wp_enqueue_scripts','manage_subscriptions_css_and_js');
+      
+      add_action('admin_init', 'register_manage_subscriptions_settings');
+      
+      function register_manage_subscriptions_settings() {
+           register_setting('manage_subscriptions_group', 'manage_subscriptions');
+      }
 
-	/*
-	 * 
+
 	 add_action('admin_menu', 'Manage_Subscriptions');
 
 	function Manage_Subscriptions() {
@@ -32,6 +37,5 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 	}
 
 	function manage_subscriptions_callback() {
-		//include MANAGE_SUBSCRIPTIONS . '/admin/settings.php';
+		include MANAGE_SUBSCRIPTIONS . '/admin/options.php';
 	}
-*/

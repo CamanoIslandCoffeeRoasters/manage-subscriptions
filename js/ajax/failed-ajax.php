@@ -7,7 +7,7 @@
 	$user 			= isset($_POST['user']) 			? $_POST['user']			: '';
 	$order_id 		= isset($_POST['order_id']) 		? $_POST['order_id']		: '';
 	$email_content 	= isset($_POST['email_content']) 	? $_POST['email_content']	: '';
-	$disposition 	= isset($_POST['disposition']) 		? $_POST['disposition']		: '';
+	$disposition 	     = isset($_POST['disposition']) 	? $_POST['disposition']		: '';
 	$cancel_reason 	= isset($_POST['cancel_reason']) 	? $_POST['cancel_reason']	: '';
 	
 	// Replace inlne line breaks with HTML line breaks for display in email
@@ -53,6 +53,7 @@
 			$note_title = 'Updated Status from call portal.';
 			$note_content = 'Status changed to canceled. Canceled because of ' . $cancel_reason;
 			$added_by = $user;
+               $note_type = 'portal';
 			
 			if ($subscription_id = get_post_meta($order_id, "subscription_id", TRUE) ) :
 			
@@ -60,7 +61,7 @@
 				Subscriptions_Subscribers::update_subscription($_order->billing_email, $subscription_id, 'cancel_reason', $cancel_reason);
 				Subscriptions_Subscribers::update_subscription($_order->billing_email, $subscription_id, 'cancel_date', date('Y-m-d'));
 				
-				Subscriptions_Notifications::add_subscription_note($subscription_id, $_order->billing_email, $note_title, $note_content, $added_by );
+				Subscriptions_Notifications::add_subscription_note($subscription_id, $_order->billing_email, $note_title, $note_content, $added_by, $note_type );
 			
 			endif;
 			

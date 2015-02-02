@@ -24,10 +24,11 @@ td > .call-flow {
 	border-radius:10px;
 	padding: 4px 0 4px 0;
 	font-size:1.3em;
-	a {
-		color:#000;
-	}
 }
+
+#subscriptions_container .subscriptions-nav a {
+		color:#ffffff;
+	}
 
 #subscriptions_container .portal_type {
 	background-color:white;
