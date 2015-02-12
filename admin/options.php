@@ -22,13 +22,21 @@ $manage_subscriptions = get_option('manage_subscriptions');
                 <tbody>
                     <tr>
                          <th scope="row">
-                              <label for="contact_last">Days Since Last Contact on Failed Order</label>
+                              <label for="contact_last_order">Days Since Last Contact on Failed Order</label>
                          </th>
                          <td>
-                              <input id="contact_last" name="manage_subscriptions[contact_last]" type="number" min="1" max="100" value="<?php echo $manage_subscriptions['contact_last'] ?>" required="required" />
+                              <input id="contact_last_order" name="manage_subscriptions[contact_last_order]" type="number" min="1" max="100" value="<?php echo $manage_subscriptions['contact_last_order'] ?>" required="required" />
                          </td>
-                    </tr>                    
-                     <tr>
+                    </tr>
+                    <tr>
+                         <th scope="row">
+                              <label for="contact_last_subscription">Days Since Last Contact on Canceled Subscription</label>
+                         </th>
+                         <td>
+                              <input id="contact_last_subscription" name="manage_subscriptions[contact_last_subscription]" type="number" min="1" max="100" value="<?php echo $manage_subscriptions['contact_last_subscription'] ?>" required="required" />
+                         </td>
+                    </tr>                     
+                    <tr>
                          <th scope="row">
                               <label for="cancel_date">Days Since Canceled Subscription</label>
                          </th>

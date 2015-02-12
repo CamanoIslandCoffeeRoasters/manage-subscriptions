@@ -103,10 +103,11 @@
 		<?php global $woocommerce, $wpdb;
 		$subscription_ids = get_data($portal_type);
           
-          
           $woo_options = get_option('woo_options');
           
-          ?>
+          if (!$subscription_ids) echo "<h1>No Reactivations with current settings</h1><a target='_blank' href='" . site_url('wp-admin/admin.php?page=manage_subscriptions') . "'>Edit Settings</a><br /><br />";
+          else {
+               ?>
           <div id="data-table">
           <table class="portal_table" width="100%" cellpadding="3" cellspacing="4">
                <thead>
@@ -118,23 +119,15 @@
                     <th>Cancel Reason</th>
                     <th>Actions</th>
                </thead>
-               <tbody id="table-body">
                <?php
-     
+               
                foreach ($subscription_ids as $subscription_id) :
-                    
-                    $subscription = Subscriptions_Subscribers::get_subscription(NULL, $subscription_id);
-                    $user = get_user_by('email', $subscription->email);
-                    $phone = get_user_meta($user->ID, "billing_phone", TRUE);
-                    /* if ($wpdb->get_results("SELECT comment_content FROM {$wpdb->comments} WHERE comment_post_ID = $order_id AND comment_content LIKE '%declined%'")) {
-                         $failed_reason = "declined";
-                    }elseif ($wpdb->get_results("SELECT comment_content FROM {$wpdb->comments} WHERE comment_post_ID = $order_id AND comment_content LIKE '%expired%'")) {
-                         $failed_reason = "expired";
-                    }
-                    */
-                     
-          
-               ?>
+               
+               $subscription = Subscriptions_Subscribers::get_subscription(NULL, $subscription_id);
+               $user = get_user_by('email', $subscription->email);
+               $phone = get_user_meta($user->ID, "billing_phone", TRUE); 
+          ?>
+               <tbody id="table-body">
                     <tr id="row-<?php echo $subscription_id ?>">
                          <td id="subscription_id">
                               <a href="<?php echo get_option('siteurl') ?>/wp-admin/admin.php?page=edit-subscription&user=<?php echo $subscription->email ?>&subscription_id=<?php echo $subscription_id ?>" target="_blank">
@@ -163,16 +156,15 @@
                               </a>
                          </td>
                     </tr>
-                    
                     <?php endforeach; ?>
                </tbody>
           </table>
           </div>
           <br />
-          <?php
-     }
-
-     ?>
+          <?php 
+               } 
+            }
+               ?>
      
           <script>
           jQuery(document).ready(function($) {
@@ -219,6 +211,7 @@
                     }
                });
                $("#form_failed").live('submit', function(event) {
+                    $('#submit_reactivation').attr('disabled', true).val('Wait...');
                     event.preventDefault();
                     console.log("Form submitted");
                     safeUrl = <?php echo json_encode(plugins_url( 'manage-subscriptions/js/ajax/' . $portal_type . '-ajax.php' )); ?>;
@@ -244,22 +237,22 @@
                     
                     switch ($(this).val()) {
                          case "yes":
-                              $('#email').val('Hi '+first_name+',\n\nIt was great to chat with you today. I\'m so glad we could get you all set up with the Coffee Lover\'s Club again.\n\nJust to review, we\'ve got you in the %SUBSCRIPTION_TYPE%, set to ship out on %SHIPDATE% and with a frequency of %FREQUENCY% weeks. Like I said on the phone, your first order will be $%DISCOUNT% off. After that, your subsequent shipments will be the regular club price of $%SUBSCRIPTION_PRICE%.\n\nWe\'re so glad to have you back in the Coffee Lover\'s Club. If you have any further questions or needs, please give our Customer Care department a call at <?php echo $woo_options['woo_contact_number']; ?>, or you can make edits to your subscription at this url: <?php echo site_url( '/my-account' ); ?>.\n\nThank you for choosing to make a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday, 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nIt was great to chat with you today. I\'m so glad we could get you all set up with the Coffee Lover\'s Club again.\n\nJust to review, we\'ve got you in the %SUBSCRIPTION_TYPE%, set to ship out on %SHIPDATE% and with a frequency of %FREQUENCY% weeks. Like I said on the phone, your first order will be $%DISCOUNT% off. After that, your subsequent shipments will be the regular club price of $%SUBSCRIPTION_PRICE%.\n\nWe\'re so glad to have you back in the Coffee Lover\'s Club. If you have any further questions or needs, please give our Customer Care department a call at <?php echo $woo_options['woo_contact_number']; ?>, or you can make edits to your subscription at this url: <?php echo site_url( '/my-account' ); ?> .\n\nThank you for choosing to make a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday, 7AM - 5PM PST');
                               $('#disposition').after('<div id="after_disposition"><br /> \
                                                             <div class="" style="margin-bottom:0% !important;"> \
                                                                  <input type="date" name="next_shipment" id="next_shipment" value="<?php echo date("Y-m-d", strtotime("+1 day")); ?>" /> \
-                                                                 <input type="number" name="one_time_deduction" id="one_time_deduction" placeholder="Add discount?"  value="" /> \
+                                                                 <input type="number" name="one_time_deduction" step="any" id="one_time_deduction" placeholder="Add discount?"  value="" /> \
                                                             </div> \
                                                        </div> \
                                                        '); 
                          break;
                          
                          case "moreinfo":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback. Per your request for more information, I’ve included the details of our Coffee Lover’s Club below.\n\nWe offer three types of memberships in the Coffee Lover’s Club. The 2lb Club, which is $34.99 per shipment. The 3lb Club, which is $44.99 per shipment. And the 4lb Club, which is $52.99 per shipment.\n\nAs a member you’ll still enjoy these member-only perks:\n\n~ Free Shipping\n~ Custom Shipping Frequency from 2 - 10 weeks\n~ Access to ALL of our Freshly Roasted, Organic, Shade-Grown Coffees\n~ Club price discount.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here on Camano Island,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback. Per your request for more information, I’ve included the details of our Coffee Lover’s Club below.\n\nWe offer three types of memberships in the Coffee Lover’s Club. The 2lb Club, which is $34.99 per shipment. The 3lb Club, which is $44.99 per shipment. And the 4lb Club, which is $52.99 per shipment.\n\nAs a member you’ll still enjoy these member-only perks:\n\n~ Free Shipping\n~ Custom Shipping Frequency from 2 - 10 weeks\n~ Access to ALL of our Freshly Roasted, Organic, Shade-Grown Coffees\n~ Club price discount.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                          break;
                          
                          case "no":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here on Camano Island,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                               /* $('#disposition').after('<br /><br /> \
                                                             <select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
                                                                  <option value=""> -- REASON FOR CANCELING -- </option> \
@@ -275,15 +268,15 @@
                          break;
                          
                          case "remove":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nWe have removed you from our call list. You will not receive any more calls unless you decide to rejoin the Coffee Lover’s Club.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.\n\nBe sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here on Camano Island,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nWe have removed you from our call list. You will not receive any more calls unless you decide to rejoin the Coffee Lover’s Club.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.\n\nBe sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                          break;
                          
                          case "noanswer":
-                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with Camano Island Coffee Roasters. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here on Camano Island have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here at <?php echo get_option('blogname') ?>, have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                          break;
                          
                          case "unreachable":
-                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with Camano Island Coffee Roasters. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here on Camano Island have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here at <?php echo get_option('blogname') ?>, have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                          break;
                          
                          default: "";
@@ -293,6 +286,7 @@
                $('#holiday-banner').hide();
                $('#footer-widgets-container').hide();
                $('.breadcrumb-trail').hide();
+               $('.woo-breadcrumbs').hide();
                $('.breadcrumb').css({'border-bottom':' !important'});
           });
      </script>

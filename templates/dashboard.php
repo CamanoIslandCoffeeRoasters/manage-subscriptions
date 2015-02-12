@@ -6,9 +6,10 @@ global $current_user;
 						
      if ( !empty($current_user->roles) ) : 
           if ( ($current_user->roles[0] == 'administrator') ) : 
-               echo "<br />Greetings and Salutations, " . $current_user->data->display_name;
+               echo "Greetings and Salutations, " . $current_user->data->display_name;
     ?>
-
+     <br />
+     <br />
      <div id="subscriptions_container">
      
      	<div class="threecol-one <?php echo ($portal_type == 'reactivate') ? 'portal_type': 'subscriptions-nav' ?>">
@@ -20,7 +21,6 @@ global $current_user;
      	<div class="threecol-one last <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
      		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=expired">Expired Cards</a>
      	</div>
-     
      
      	<div class="fourcol-one call-flow" id="customer">
      		<h4>Customers</h4>
@@ -68,17 +68,23 @@ global $current_user;
 	function get_data( $portal_type = "" ) {
 		global $wpdb;
           $manage_subscriptions = get_option('manage_subscriptions'); 
-		
+          
 		switch ($portal_type) {
 			case "reactivate":
 				$data = $wpdb->get_col("SELECT subs.subscription_id 
 										FROM  " . $wpdb->prefix . "subscriptions subs
+										LEFT JOIN " . $wpdb->prefix . "subscriptions_notes notes
+										     ON notes.subscription_id = subs.subscription_id
 										WHERE subs.status = 'canceled' 
-										AND subs.cancel_reason != '' 
+										AND subs.cancel_reason != 'remove' 
 										AND subs.cancel_date < '". date('Y-m-d', strtotime('-' . $manage_subscriptions['cancel_date']. ' days')). "'
+										AND ((subs.subscription_id NOT IN (SELECT subscription_id FROM " . $wpdb->prefix . "subscriptions_notes WHERE note_type = 'contact_last'))
+										OR ((notes.note_type = 'contact_last')
+										AND (DATE(notes.note_date) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."')))
+										GROUP BY subs.subscription_id
+										ORDER BY subs.cancel_reason DESC
 										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
                                                   
-                    $rows = count($data);
 		     break;
 			
 			case "failed":
@@ -90,7 +96,7 @@ global $current_user;
 										AND posts.post_status = 'wc-failed' 
 										AND ((meta.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_last'))
 										OR (meta.meta_key = 'contact_last' 
-										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['cancel_date'].' days')). "')) 
+										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['contact_last_order'].' days')). "')) 
 										ORDER BY posts.post_date DESC 
 										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
 			break;
@@ -102,7 +108,7 @@ global $current_user;
 										FROM {$wpdb->usermeta}
 										WHERE meta_key = '_wc_authorize_net_cim_payment_profiles'
 										AND meta_value REGEXP '$complete_search'
-										LIMIT 0,". $manage_subscriptions['num_rows'] . "");
+										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
 			break;
 				
 			default: $data = "";

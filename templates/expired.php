@@ -23,7 +23,8 @@
 	function expired_table($portal_type) {
 		
 		$expired_user_ids = get_data($portal_type);
-				?>
+	?>
+	<div id="data-table">
 		<table class="portal_table" width="100%" cellpadding="3" cellspacing="4">
 			<thead>
 				<th>User ID</th>
@@ -63,6 +64,9 @@
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+	</div>
+	<br />
+		
 	<?php
 	}
 	?>

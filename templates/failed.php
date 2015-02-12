@@ -148,6 +148,7 @@ function failed_table($portal_type) {
 			</tbody>
 		</table>
 		</div>
+		<br />
 		<?php
 	}
 
