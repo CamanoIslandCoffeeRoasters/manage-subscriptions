@@ -110,7 +110,7 @@
           break;
      }
      
-	Subscriptions_Notifications::contact_last_note($subscription_id, $subscription->email);
+     Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'contact_last', date('Y-m-d H:i:s', strtotime('-8 hours')));
      Subscriptions_Notifications::add_subscription_note($subscription_id, $subscription->email, $note_title, $note_content, $added_by, $note_type);
 
 	echo json_encode($disposition);	

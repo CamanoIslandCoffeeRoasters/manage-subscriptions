@@ -21,7 +21,7 @@ global $current_user;
      	<div class="threecol-one last <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
      		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=expired">Expired Cards</a>
      	</div>
-     
+               <div style="clear:both;"></div>
      	<div class="fourcol-one call-flow" id="customer">
      		<h4>Customers</h4>
      	</div>
@@ -34,7 +34,7 @@ global $current_user;
      	<div class="fourcol-one last call-flow" id="survey">
      		<h4>Survey</h4>	
      	</div>
-     	
+     	<div style="clear:both;"></div>
      	<div id="customer_content">
      		<?php echo get_customers($portal_type); ?>
      	</div>
@@ -71,20 +71,15 @@ global $current_user;
           
 		switch ($portal_type) {
 			case "reactivate":
-				$data = $wpdb->get_col("SELECT subs.subscription_id 
-										FROM  " . $wpdb->prefix . "subscriptions subs
-										LEFT JOIN " . $wpdb->prefix . "subscriptions_notes notes
-										     ON notes.subscription_id = subs.subscription_id
-										WHERE subs.status = 'canceled' 
-										AND subs.cancel_reason != 'remove' 
-										AND subs.cancel_date < '". date('Y-m-d', strtotime('-' . $manage_subscriptions['cancel_date']. ' days')). "'
-										AND ((subs.subscription_id NOT IN (SELECT subscription_id FROM " . $wpdb->prefix . "subscriptions_notes WHERE note_type = 'contact_last'))
-										OR ((notes.note_type = 'contact_last')
-										AND (DATE(notes.note_date) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."')))
-										GROUP BY subs.subscription_id
-										ORDER BY subs.cancel_reason DESC
-										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
-                                                  
+                    $data = $wpdb->get_col("SELECT subs.subscription_id 
+                                                  FROM  " . $wpdb->prefix . "subscriptions subs
+                                                  WHERE subs.status = 'canceled' 
+                                                  AND subs.cancel_reason != 'remove' 
+                                                  AND subs.cancel_date < '". date('Y-m-d', strtotime('-' . $manage_subscriptions['cancel_date']. ' days')). "'
+                                                  AND ((subs.contact_last IS NULL)
+                                                  OR (DATE(subs.contact_last) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."'))
+                                                  ORDER BY subs.cancel_reason DESC
+                                                  LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
 		     break;
 			
 			case "failed":

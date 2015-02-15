@@ -30,6 +30,7 @@
                <div class="fourcol-one last">
                     <a id="voicemail" class="click" href="#voicemail_div"><h3><u>Voicemail</u></h3></a>
                </div>
+               <div style="clear:both;"></div>
                <br />
                <br /> 
                <div id="money_div" class="money option">
@@ -253,18 +254,6 @@
                          
                          case "no":
                               $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                              /* $('#disposition').after('<br /><br /> \
-                                                            <select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
-                                                                 <option value=""> -- REASON FOR CANCELING -- </option> \
-                                                                 <option value="finances">Finances</option> \
-                                                                 <option value="health">Health</option> \
-                                                                 <option value="moving">Moving</option> \
-                                                                 <option value="upset">Upset</option> \
-                                                                 <option value="unreachable">Unreachable</option> \
-                                                                 <option value="other">Other</option> \
-                                                             </select> \
-                                                            ');
-                                                            */
                          break;
                          
                          case "remove":
