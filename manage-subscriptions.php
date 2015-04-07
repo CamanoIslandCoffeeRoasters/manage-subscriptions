@@ -32,7 +32,7 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 	 add_action('admin_menu', 'Manage_Subscriptions');
 
 	function Manage_Subscriptions() {
-		add_menu_page('Manage Subscriptions', 'Manage Subscriptions', 'manage_options', 'manage_subscriptions', 'manage_subscriptions_callback', '', $position);
+		add_menu_page('Manage Subscriptions', 'Manage Subscriptions', 'manage_options', 'manage_subscriptions', 'manage_subscriptions_callback', '');
 		//add_submenu_page('');
 	}
 

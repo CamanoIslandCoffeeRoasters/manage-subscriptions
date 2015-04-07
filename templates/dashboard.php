@@ -12,16 +12,19 @@ global $current_user;
      <br />
      <div id="subscriptions_container">
      
-     	<div class="threecol-one <?php echo ($portal_type == 'reactivate') ? 'portal_type': 'subscriptions-nav' ?>">
+     	<div class="fourcol-one <?php echo ($portal_type == 'reactivate') ? 'portal_type': 'subscriptions-nav' ?>">
      		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=reactivate">Reactivations</a>
      	</div>
-     	<div class="threecol-one <?php echo ($portal_type == 'failed') ? 'portal_type': 'subscriptions-nav' ?>">
+     	<div class="fourcol-one <?php echo ($portal_type == 'failed') ? 'portal_type': 'subscriptions-nav' ?>">
      		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=failed">Failed Orders</a>
      	</div>
-     	<div class="threecol-one last <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
+     	<div class="fourcol-one <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
      		<a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=expired">Expired Cards</a>
      	</div>
-               <div style="clear:both;"></div>
+     	<div class="fourcol-one last <?php echo ($portal_type == 'signup') ? 'portal_type': 'subscriptions-nav' ?>">
+               <a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=signup">Signups</a>
+          </div>
+          <div style="clear:both;"></div>
      	<div class="fourcol-one call-flow" id="customer">
      		<h4>Customers</h4>
      	</div>
@@ -54,6 +57,78 @@ global $current_user;
      	</div>
      
      </div>
+     
+     <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            /**
+             * This javascript file checks for the brower/browser tab action.
+             * It is based on the file menstioned by Daniel Melo.
+             * Reference: http://stackoverflow.com/questions/1921941/close-kill-the-session-when-the-browser-or-tab-is-closed
+             */
+            var validNavigation = false;
+             
+            function wireUpEvents() {
+              /**
+               * For a list of events that triggers onbeforeunload on IE
+               * check http://msdn.microsoft.com/en-us/library/ms536907(VS.85).aspx
+               *
+               * onbeforeunload for IE and chrome
+               * check http://stackoverflow.com/questions/1802930/setting-onbeforeunload-on-body-element-in-chrome-and-ie-using-jquery
+               */
+              var dont_confirm_leave = 0; //set dont_confirm_leave to 1 when you want the user to be able to leave withou confirmation
+              var leave_message = 'You sure you want to leeeeeave?'
+              function goodbye(e) {
+                if (!validNavigation) {
+                  if (dont_confirm_leave!==1) {
+                    if(!e) e = window.event;
+                    //e.cancelBubble is supported by IE - this will kill the bubbling process.
+                    e.cancelBubble = true;
+                    e.returnValue = leave_message;
+                    //e.stopPropagation works in Firefox.
+                    if (e.stopPropagation) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }
+                    //return works for Chrome and Safari
+                    return leave_message;
+                  }
+                }
+              }
+              window.onbeforeunload=goodbye;
+             
+              // Attach the event keypress to exclude the F5 refresh
+              $(document).bind('keypress', function(e) {
+                if (e.keyCode == 116){
+                    console.log(e);
+                  validNavigation = true;
+                }
+              });
+             
+              // Attach the event click for all links in the page
+              $("a").bind("click", function() {
+                validNavigation = true;
+              });
+             
+              // Attach the event submit for all forms in the page
+              $("form").bind("submit", function() {
+                validNavigation = true;
+              });
+             
+              // Attach the event click for all inputs in the page
+              $("input[type=submit]").bind("click", function() {
+                validNavigation = true;
+              });
+             
+            }
+             
+            // Wire up the events as soon as the DOM tree is ready
+            $(document).ready(function() {
+              wireUpEvents();
+            });
+        });
+
+     </script>
+     
      <?php 
 	         else: echo "You do not have sufficient permissions to view this page";
 	    endif;
@@ -67,8 +142,18 @@ global $current_user;
 	// GET TABLE DATA
 	function get_data( $portal_type = "" ) {
 		global $wpdb;
-          $manage_subscriptions = get_option('manage_subscriptions'); 
-          
+          $manage_subscriptions = get_option('manage_subscriptions');
+          $manage_subscriptions_disabled = get_option('manage_subscriptions_disabled');
+          $locked_subscriptions = array();
+          if ($manage_subscriptions_disabled) {
+            foreach ($manage_subscriptions_disabled as $user_id => $locked) {
+              if ($user_id !=  wp_get_current_user()->ID) {
+                  $locked_subscriptions = array_merge($locked_subscriptions, $locked);
+              }
+            }
+          }
+                          
+                  
 		switch ($portal_type) {
 			case "reactivate":
                     $data = $wpdb->get_col("SELECT subs.subscription_id 
@@ -78,20 +163,30 @@ global $current_user;
                                                   AND subs.cancel_date < '". date('Y-m-d', strtotime('-' . $manage_subscriptions['cancel_date']. ' days')). "'
                                                   AND ((subs.contact_last IS NULL)
                                                   OR (DATE(subs.contact_last) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."'))
+                                                  AND subs.subscription_id NOT IN (" . implode(",", $locked_subscriptions) . ")
                                                   ORDER BY subs.cancel_reason DESC
                                                   LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
+                                                  
+                                                  $manage_subscriptions_disabled[wp_get_current_user()->ID] = array_keys(array_flip($data));                                                  
+                                                  
+                                                  update_option("manage_subscriptions_disabled",$manage_subscriptions_disabled);
+                                                  
 		     break;
 			
 			case "failed":
 				$data = $wpdb->get_col("SELECT distinct(posts.ID) 
 										FROM {$wpdb->posts} posts 
 										LEFT JOIN {$wpdb->postmeta} meta 
-										     ON meta.post_id = posts.ID 
+										     ON meta.post_id = posts.ID
+										LEFT JOIN {$wpdb->postmeta} meta2 
+                                             ON meta2.post_id = posts.ID  
 										WHERE posts.post_type = 'shop_order' 
 										AND posts.post_status = 'wc-failed' 
 										AND ((meta.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_last'))
 										OR (meta.meta_key = 'contact_last' 
-										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['contact_last_order'].' days')). "')) 
+										AND ((meta2.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_amount'))
+										OR (meta2.meta_key = 'contact_amount' AND meta2.meta_value <= 3 )) 
+										AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['contact_last_order'].' days')). "'))
 										ORDER BY posts.post_date DESC 
 										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
 			break;
@@ -105,7 +200,22 @@ global $current_user;
 										AND meta_value REGEXP '$complete_search'
 										LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
 			break;
-				
+			
+			case "signup":
+
+                $data = $wpdb->get_col("SELECT ID
+                                        FROM {$wpdb->posts} posts
+                                        JOIN {$wpdb->postmeta} meta 
+                                            ON posts.ID = meta.post_id
+                                        WHERE posts.post_type = 'shop_order'
+                                        AND posts.post_status IN ('wc-processing', 'wc-completed')
+                                        AND posts.ID NOT IN 
+                                            (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_new_signup')
+                                        AND meta.meta_key = 'free_pound'
+                                        ORDER BY posts.post_date DESC
+                                        LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
+            break;
+			
 			default: $data = "";
 			break;
 		} 

@@ -52,7 +52,6 @@ $manage_subscriptions = get_option('manage_subscriptions');
                               <input id="num_rows" name="manage_subscriptions[num_rows]" type="number" min="1" max="150" value="<?php echo $manage_subscriptions['num_rows'] ?>" required="required" />
                          </td>
                     </tr>
-
                 </tbody>
             </table>
             <?php submit_button(); ?>
