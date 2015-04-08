@@ -189,7 +189,7 @@ function signup_table($portal_type) {
                                             ');
                 }else {
                     $("#failed_order_"+order_id).remove();
-                    $(this).text("Open");
+                    $(this).html('<a class="actions">Open</a>');
                 }
             });
             $("#form_failed").live('submit', function(event) {
@@ -264,9 +264,10 @@ function signup_table($portal_type) {
             $('#holiday-banner').hide();
             $('#footer-widgets-container').hide();
             $('.breadcrumb-trail').hide();
+            $('.woo-breadcrumbs').hide();
             $('.breadcrumb').css({'border-bottom':' !important'});
-            
-            
+            $('.menu-item').hide();
+            $('.cart').hide();            
         });
         
     </script>

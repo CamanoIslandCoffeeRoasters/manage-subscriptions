@@ -79,12 +79,14 @@
 	}
 
 function failed_table($portal_type) {
-		$order_ids = get_data($portal_type);
 		global $woocommerce, $wpdb;
+		$order_ids = get_data($portal_type);
 		
 		$woo_options = get_option('woo_options');
-		
-		?>
+        
+        if (!$order_ids) echo "<h1>No Failed Orders with current settings</h1><a target='_blank' href='" . site_url('wp-admin/admin.php?page=manage_subscriptions') . "'>Edit Settings</a><br /><br />";
+        else {
+        ?>
 		<div id="data-table">
 		<table class="portal_table" width="100%" cellpadding="3" cellspacing="4">
 			<thead>
@@ -150,8 +152,8 @@ function failed_table($portal_type) {
 		</div>
 		<br />
 		<?php
-	}
-
+       }
+   }
 	?>
 	
 		<script>
@@ -194,7 +196,7 @@ function failed_table($portal_type) {
 											');
 				}else {
 					$("#failed_order_"+order_id).remove();
-					$(this).text("Open");
+					$(this).html('<a class="actions">Open</a>');
 				}
 			});
 			$("#form_failed").live('submit', function(event) {
@@ -261,9 +263,10 @@ function failed_table($portal_type) {
 			$('#holiday-banner').hide();
 			$('#footer-widgets-container').hide();
 			$('.breadcrumb-trail').hide();
+			$('.woo-breadcrumbs').hide();
 			$('.breadcrumb').css({'border-bottom':' !important'});
-			
-			
+			$('.menu-item').hide();
+            $('.cart').hide();			
 		});
 		
 	</script>

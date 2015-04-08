@@ -6,10 +6,30 @@
 	text-align:center;
 	border-radius:10px;
 	padding: 4px 0 4px 0;
+	
+	border: 0;
+	background: #85AAB1;
+	border-radius: 4px;
+	box-shadow: 0 3px 0 #006599;
+	color: #fff;
+	cursor: pointer;
+	font: inherit;
+	outline: 0;
+	transition: all .02s linear;
 	div {
 		color:#000;
 	}
 }
+
+#subscriptions_container .call-flow:hover {
+	background-color: rgba(169,195,200, 0.75);
+}
+
+#subscriptions_container .call-flow:active {
+  box-shadow: 0 1px 0 #006599;
+  transform: translateY(3px);
+}
+
 
 td > .call-flow {
 	background-color:#85AAB1;
@@ -21,23 +41,38 @@ td > .call-flow {
 #subscriptions_container .subscriptions-nav {
 	background-color:#523D26;
 	text-align:center;
-	border-radius:10px;
 	padding: 4px 0 4px 0;
-	font-size:1.3em;
+	font-size:1.4em;
+	
+	border: 0;
+	border-radius: 4px;
+	box-shadow: 0 3px 0 #291908;
+	color: #fff;
+	cursor: pointer;
+	outline: 0;
+	transition: all .02s linear;
 }
 
+#subscriptions_container .subscriptions-nav:hover {
+	background-color: rgba(82,61,38, 0.8);
+}
+
+#subscriptions_container .subscriptions-nav:active {
+	box-shadow: 0 1px 0 #006599;
+  	transform: translateY(3px);
+}
 #subscriptions_container .subscriptions-nav a {
 		color:#ffffff;
-	}
+}
 
 #subscriptions_container .portal_type {
 	background-color:white;
 	text-align:center;
-	border-radius:10px;
+	border-radius:4px;
 	padding: 4px 0 4px 0;
 	font-size:1.3em;
 	text-decoration: none;
-	box-shadow: inset 0 0 5px #000, inset 0 0 5px #000, inset 0 0 5px #000;
+	box-shadow: inset 0 0 5px #523D26, inset 0 0 5px #523D26, inset 0 0 5px #523D26;
 }
 
 #subscriptions_container .portal_type a:hover {

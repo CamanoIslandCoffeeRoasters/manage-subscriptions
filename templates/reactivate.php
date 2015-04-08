@@ -32,6 +32,7 @@
                </div>
                <div style="clear:both;"></div>
                <br />
+               <br />
                <br /> 
                <div id="money_div" class="money option">
                     <li><b>Too much money formerly 3lb or 4lb:</b></li>
@@ -208,7 +209,7 @@
                                                        ');
                     }else {
                          $("#failed_order_"+subscription_id).remove();
-                         $(this).text("Open");
+                         $(this).html('<a class="actions">Open</a>');
                     }
                });
                $("#form_failed").live('submit', function(event) {
@@ -277,5 +278,7 @@
                $('.breadcrumb-trail').hide();
                $('.woo-breadcrumbs').hide();
                $('.breadcrumb').css({'border-bottom':' !important'});
+               $('.menu-item').hide();
+               $('.cart').hide();
           });
      </script>
