@@ -121,7 +121,7 @@
           $mail_headers .= "Content-type: text/html; charset=utf-8\r\n";
           $mail_attachments = '';
           
-          return wp_mail($subscription->email, $mail_subject, $email_content,$mail_headers, $mail_attachments);
+      return wp_mail($subscription->email, $mail_subject, $email_content,$mail_headers, $mail_attachments);
      }
 
 ?>

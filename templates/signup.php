@@ -13,60 +13,28 @@
         <?php global $current_user; ?>
         <?php $woo_options = get_option('woo_options'); ?>
         
-        <div class="twocol-one" ><h2 style="color:red;">Declined</h2>
+        <div class="twocol-one" ><h2 style="color:red;">Script</h2>
             <li>Hi, is this <b>customer name</b>?</li>
             <li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>. How are you doing today?</li>
             <li><b>Wait for reply</b></li>
-            <li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li> 
-            <li>We just need to update your card and then we can get your next shipment out.</li> 
-            <li>The card we have on file ends in <b> cc last four </b> and has an expiration date of <b>expiration date</b>. Would you like us to try running this card again or use a different card?</li> 
-            <li><b>Wait for reply. Make any changes necessary.</b></li> 
-            <li>Alright, and your next shipment is set to go to <b>confirm shipping address</b>. Is this correct?</li>  
-            <li><b>Wait for reply</b></li> 
-            <li><b>If confirmed correct: reprocess card -- wait to ensure it works</b></li>
-            <li><u>If card DOES reprocess correctly</u></li>    
-            <li>OK, great! We’ll get that next shipment right out to you.       
-            <li>Is there anything else I can do for you while you have me on the phone? <br /></li>
-            <li><b>Wait for reply</b></li>  
-            <li>OK. Thank you again for drinking <?php echo get_option('blogname') ?> and have a great day.</li>
-            <li><u>If card does NOT process</u></li>
-            <li>It looks like that card failed again. Do you have another card you’d like to use?</li>
-            <li>Wait for reply. Make any changes necessary.</li>
-            <li><b>Reprocess card -- wait to ensure it works</b></li>
+            <li>I just wanted to give you a quick call to say thank you. Thank you for joining our Coffee Lovers Club and thank you for drinking our coffee. We really appreciate you.</li> 
+            <li>Thanks to coffee lovers like you we're able to help our farmers work they way out of poverty. You truly are making a difference, so thank you.</li> 
+            <li>Also we wanted to make sure you know about our new streamlined referral program. For every friend you refer to us we'll give $20 off their first shipment and $20 off your next shipment when you're friend joins.</li> 
+            <li>It's really easy too. All they have to do is enter your name when they signup and we'll do the rest.</li>  
+            <li>Thank you again for drinking our coffee and for choosing to make a difference with your daily cup of coffee.</li>       
         </div>
         
         <div class="twocol-one last">
-            <h2 style="color:green;">Expired</h2>
-            <li>Hi, is this <b> customer name </b> ? </li>
-            <li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>. How are you doing today? </li>
-            <li><b>Wait for reply</b></li>
-            <li>Great! The reason I’m calling you today is your latest coffee shipment failed to process due to an issue with your card on file.</li>
-            <li>We just need to update your card and then we can get your next shipment out. The card we have on file ends in -- insert last four -- and has an expiration date of  -- insert expiration date --.</li>
-            <li>Do you have an updated expiration date for that card or a new card you would like to use?</li>
-            <li><b>Wait for reply. Make any changes necessary</b></li>
-            <li>Alright, and your next shipment is set to go to -- confirm shipping address --. Is this correct?</li>
-            <li><b>Wait for reply</b></li>
-            <li>If confirmed correct: reprocess card -- wait to ensure it works</li>
-            <li><u>If card DOES reprocess correctly</u></li>
-            <li>OK, great! We’ll get that next shipment right out to you.</li>
-            <li>Is there anything else I can do for you while you have me on the phone?</li>
-            <li><b>Wait for reply</b></li>
-            <li>OK. Thank you again for drinking <?php echo get_option('blogname') ?> and have a great day.</li>
-            <li><u>If card does NOT process</u></li>
-            <li>It looks like that card failed again. Do you have another card you’d like to use?</li> 
-            <li><b>Wait for reply. Make any changes necessary</b></li>
-            <li><u>reprocess card -- wait to ensure it works</u></li>
-            <br />
-            <br />
-            <h2>Voicemail</h2>
+            <h2 style="color:green;">Voicemail</h2>
             <li>This is a message for <b>customer name</b>.</li> 
             <li>Hi, this is <b><?php echo $current_user->data->display_name; ?></b> with <?php echo get_option('blogname') ?>.</li> 
-            <li>Unfortunately your last coffee shipment failed to process due to an issue with your card on file.</li>
-            <li>We just need to update your card and then we can get your next shipment out. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?></li>
-            <li>Thank you and have a nice day.</li>
+            <li>I just wanted to give you a quick call to say thank you for joining our Coffee Lovers Club and thank you for drinking our coffee. We really appreciate you. Thanks to coffee lovers like you we're able to help our farmers work they way out of poverty. You truly are making a difference, so thank you.</li>
+            <li>Also we wanted to make sure you know about our new streamlined referral program. For every friend you refer to us we'll give $20 off their first shipment and $20 off your next shipment when you're friend joins.</li>
+            <li>It's really easy too. All they have to do is enter your name when they signup and we'll do the rest.</li>
+            <li>If you would like to know more about how it works please feel free to give us a call at <?php echo $woo_options['woo_contact_number']; ?></li>
+            <li>Thanks again, and have a great day.</li>
         </div>
 
-                
         <?php
     }
     
@@ -165,11 +133,9 @@ function signup_table($portal_type) {
                                                         <div class="sixcol-two" style="margin-bottom:0% !important;"> \
                                                             <select style="width:100%" name="disposition" id="disposition" required="required"> \
                                                                 <option value=""> -- SELECT OUTCOME -- </option> \
-                                                                <option value="updated">Updated Credit Card</option> \
                                                                 <option value="voicemail">Left Voicemail</option> \
-                                                                <option value="canceled">Cancel Subscription</option> \
-                                                                <option value="email">Email</option> \
-                                                                <option value="unreachable">Unreachable</option> \
+                                                                <option value="completed">Completed</option> \
+                                                                <option value="moreinfo">More Info</option> \
                                                             </select> \
                                                         </div> \
                                                         <div class="sixcol-three" style="margin-bottom:0% !important;"> \
@@ -217,36 +183,18 @@ function signup_table($portal_type) {
                 }
                 
                 switch ($(this).val()) {
-                    case "updated":
-                        $('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: <?php echo site_url( '/my-account' ); ?> .\n\nAlso, if you need any help with your account, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                    break;
+                    case "completed":
+                        $('#email').val("Dear "+first_name+",\n\nThank you for taking my call today, and for drinking our coffee. I also wanted to give you a quick reminder about our new streamlined referral program. For every friend you refer to us we will give them $20 off their first Coffee Lovers Club shipment and $20 off your next Coffee Lovers Club shipment when your friend joins.\n\nIt is really easy too. All they have to do is enter your name when they signup and we will do the rest. Here is a link to learn more about the program: <?php echo site_url('/referral-learn-more') ?> \n\nThank you again for drinking our coffee and for choosing to make a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST");
+                    break;                    
                     
                     case "voicemail":
-                        $('#email').val('Dear '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?> at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                        $('#email').val("Hi "+first_name+",\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I left you a quick voicemail earlier today just to thank you for joining our Coffee Lovers Club and thank you for drinking our coffee. We really appreciate you.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nI also wanted to let you know about our new streamlined referral program. For every friend you refer to us we will give them $20 off their first Coffee Lovers Club shipment and $20 off your next Coffee Lovers Club shipment when your friend joins.\n\nIt is really easy too. All they have to do is enter your name when they signup and we will do the rest.\n\nHere is a link to learn more about the program: <?php echo site_url('/referral-learn-more') ?>\n\nThank you again for drinking our coffee and for choosing to make a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST");
                     break;
                     
-                    case "canceled":
-                        $('#email').val('Dear '+first_name+',\n\nThank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                        $('#disposition').after('<br /><br /> \
-                                                <select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
-                                                    <option value=""> -- REASON FOR CANCELING -- </option> \
-                                                    <option value="finances">Finances</option> \
-                                                    <option value="health">Health</option> \
-                                                    <option value="moving">Moving</option> \
-                                                    <option value="upset">Upset</option> \
-                                                    <option value="unreachable">Unreachable</option> \
-                                                    <option value="other">Other</option> \
-                                                 </select> \
-                                                ');
+                    case "moreinfo":
+                        $('#email').val("Hi "+first_name+",\n\nThank you for taking my call today, and for drinking our coffee. We really appreciate you. As requested here is the link to learn more about our new streamlined referral program: <?php echo site_url('/referral-learn-more') ?>. For every friend you refer to us we will give them $20 off their first Coffee Lovers Club shipment and $20 off your next Coffee Lovers Club shipment when your friend joins.\n\nIt is really easy too. All they have to do is enter your name when they signup and we will do the rest.\n\nThank you again for drinking our coffee and for choosing to make a difference with your daily cup of coffee.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST");
                     break;
-                    
-                    case "email":
-                        $('#email').val('Dear '+first_name+',\n\nThere seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                    break;
-                    
-                    case "unreachable":
-                        $('#email').val('Customer Unreachable.');
-                    break;
+
                     
                     default: "";
                     break;
