@@ -123,7 +123,7 @@ function failed_table($portal_type) {
 						</a>
 					</td>
 					<td id="order_name">
-						<a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>">
+						<a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>" target="_blank">
 							<span id="first_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_first_name ?></span>
 							<span id="last_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_last_name ?></span>
 						</a>

@@ -58,3 +58,4 @@ $manage_subscriptions = get_option('manage_subscriptions');
         </form>
     </div>
 </div>
+

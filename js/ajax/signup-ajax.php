@@ -37,7 +37,7 @@
     $mail_headers .= "Content-type: text/html; charset=utf-8\r\n";
     $mail_attachments = '';
     
-    return wp_mail( "tobin.fekkes@camanoislandmanagement.com", $mail_subject, $mail_message, $mail_headers, $mail_attachments );
+    return wp_mail( $mail_email, $mail_subject, $mail_message, $mail_headers, $mail_attachments );
 
     
 ?>

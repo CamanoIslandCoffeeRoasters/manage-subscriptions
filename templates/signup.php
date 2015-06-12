@@ -81,7 +81,7 @@ function signup_table($portal_type) {
                         </a>
                     </td>
                     <td id="order_name">
-                        <a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>">
+                        <a href="<?php echo get_option('siteurl') . '/wp-admin/admin.php?page=edit-subscription&user='.$_order->billing_email.'&subscription_id='.$subscription_id ?>" target="_blank">
                             <span id="first_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_first_name ?></span>
                             <span id="last_name_<?php echo $_order->id ?>"><?php echo $_order->shipping_last_name ?></span>
                         </a>
@@ -195,7 +195,6 @@ function signup_table($portal_type) {
                         $('#email').val("Hi "+first_name+",\n\nThank you for taking my call today, and for drinking our coffee. We really appreciate you. As requested here is the link to learn more about our new streamlined referral program: <?php echo site_url('/referral-learn-more') ?>. For every friend you refer to us we will give them $20 off their first Coffee Lovers Club shipment and $20 off your next Coffee Lovers Club shipment when your friend joins.\n\nIt is really easy too. All they have to do is enter your name when they signup and we will do the rest.\n\nThank you again for drinking our coffee and for choosing to make a difference with your daily cup of coffee.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST");
                     break;
 
-                    
                     default: "";
                     break;
                 }
