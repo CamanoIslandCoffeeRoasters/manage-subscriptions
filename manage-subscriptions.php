@@ -31,9 +31,6 @@ define( 'MANAGE_SUBSCRIPTIONS', untrailingslashit( plugin_dir_path( __FILE__ ) )
 			if ( is_page('portal') ) {
 					wp_register_style('manage_subscriptions_css', plugins_url('css/style.css',__FILE__ ));
 					wp_enqueue_style('manage_subscriptions_css');
-					wp_register_script('manage_subscriptions_js', plugins_url('js/admin.js',__FILE__ ));
-					wp_enqueue_script('manage_subscriptions_js');
-
 				}
 			}
 	
