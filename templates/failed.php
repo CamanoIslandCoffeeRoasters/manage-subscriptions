@@ -131,7 +131,7 @@ function failed_table($portal_type) {
 					<td class="order_email" id="order_email">
 						<?php echo $_order->billing_email ?>
 					</td>
-					<td id="sub_phone">
+					<td id="sub_phone" data-caller-name="<?php echo $_order->billing_first_name . " " . $_order->billing_last_name ?>">
 						<?php echo $_order->billing_phone ? str_replace(array('-', '.', ' ', '(', ')'), '', $_order->billing_phone) : str_replace(array('-', '.', ' ', '(', ')'), '', get_user_meta($_order->customer_user, "billing_phone", TRUE)) ?>
 					</td>
 					<td id="sub_cancel_date">
@@ -163,8 +163,8 @@ function failed_table($portal_type) {
 				order_email = $(this).find(".order_email").text();
 				console.log(order_email);
 				exists = $("#failed_order_"+order_id);
-				console.log("Order #"+order_id);
-				
+
+				$('[id^="failed_order_"]').remove();
 				if (exists.length == 0) {
 					$(this).html("Cancel");
 					$(this).parent().after('<tr id="failed_order_'+order_id+'"> \
@@ -237,14 +237,23 @@ function failed_table($portal_type) {
 						$('#disposition').after('<br /><br /> \
 												<select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
 													<option value=""> -- REASON FOR CANCELING -- </option> \
+													<option value="billing">Billing</option> \
+													<option value="death">Death</option> \
+													<option value="duplicate">Duplicate</option> \
+													<option value="dislike">Dislike</option> \
 													<option value="finances">Finances</option> \
+													<option value="quantity">Quantity</option> \
+													<option value="gift">Gift</option> \
 													<option value="health">Health</option> \
+													<option value="keurig">Keurig</option> \
+													<option value="obligation">Obligation</option> \
+													<option value="marketplace">Marketplace</option> \
 													<option value="moving">Moving</option> \
+													<option value="traveling">Traveling</option> \
 													<option value="upset">Upset</option> \
-													<option value="unreachable">Unreachable</option> \
-													<option value="other">Other</option> \
+													<option value="note">See Note</option> \
 												 </select> \
-												');
+												');												
 					break;
 					
 					case "email":
@@ -259,6 +268,13 @@ function failed_table($portal_type) {
 					break;
 				}
 			});
+			
+			 $('#sub_phone').live("click", function() {
+                    extension = '<?php echo get_user_meta(wp_get_current_user()->ID, "phone_extension", true); ?>';
+                    number = $(this).text();
+                    caller_name = $(this).attr('data-caller-name');
+                    $.getJSON("http://sip.camanoislandmanagement.com/call.php?exten="+extension+"&number="+number+"&caller_name="+caller_name+"", function() {});
+                });
 			
 			$('#holiday-banner').hide();
 			$('#footer-widgets-container').hide();

@@ -59,7 +59,7 @@ function signup_table($portal_type) {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Order Date</th>
+                <th>Signup</th>
                 <th>Source</th>
                 <th>Actions</th>
             </thead>
@@ -120,10 +120,8 @@ function signup_table($portal_type) {
                 subscription_id = $(this).attr("data-subscription-id");
                 order_email = $(this).parent().find(".order_email").text();
                 exists = $("#failed_order_"+order_id);
-                console.log("Email: "+order_email);
-                console.log("Order #"+order_id);
-                console.log("Subscription #"+subscription_id);
-                
+
+                $('[id^="failed_order_"]').remove();
                 if (exists.length == 0) {
                     $(this).html("Cancel");
                     $(this).parent().after('<tr id="failed_order_'+order_id+'"> \
@@ -204,7 +202,7 @@ function signup_table($portal_type) {
                 extension = '<?php echo get_user_meta(wp_get_current_user()->ID, "phone_extension", true); ?>';
                 number = $(this).text();
                 caller_name = $(this).attr('data-caller-name');
-                $.getJSON("http://199.195.146.28/call.php?exten="+extension+"&number="+number+"&caller_name="+caller_name+"", function() {});
+                $.getJSON("http://sip.camanoislandmanagement.com/call.php?exten="+extension+"&number="+number+"&caller_name="+caller_name+"", function() {});
             });
             
             

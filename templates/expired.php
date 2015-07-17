@@ -82,8 +82,8 @@
                 sub_email = $(this).find(".sub_email").text();
                 console.log(sub_email);
                 exists = $("#reactivate_customer_"+sub_id);
-                console.log("Reactivate Subscription #"+sub_id);
-                
+
+                $('[id^="reactivate_customer_"]').remove();
                 if (exists.length == 0) {
                     $(this).html("Cancel");
                     $(this).parent().after('<tr id="reactivate_customer_'+sub_id+'"> \

@@ -6,69 +6,89 @@ global $current_user;
     ?>
      <br /><br /><br /><br />
     <?php
-                        
+
      if ( !empty($current_user->roles) ) : 
           if ( ($current_user->roles[0] == 'administrator') ) : 
                echo "Greetings and Salutations, " . $current_user->data->display_name;
     ?>
     <br />
     <br />
+    <!-- START PORTAL TYPES -->
     <div id="subscriptions_container">
-        <a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=reactivate">
-            <div class="fourcol-one <?php echo ($portal_type == 'reactivate') ? 'portal_type': 'subscriptions-nav' ?>">
-                Reactivations
+    <?php 
+        $options = array(
+                    array('reactivate'  =>  'Reactivations'),
+                    array('failed'      =>  'Failed Orders'),
+                    array('expired'     =>  'Expired Cards'),
+                    array('referral'    =>  'Referrals'),
+                    array('signup'      =>  'Signups'),
+        );
+        $i = 0;
+        $count = count($options);
+        foreach ($options as $keys) :
+            foreach ($keys as $key => $name) :
+                $i++;
+                $last = ($i == $count) ? "last" : "";      
+                ?>
+                <a href="<?php echo site_url() ?>/portal/?portal_type=<?php echo $key ?>">
+                    <div class="<?php echo int_to_word($count); ?>col-one <?php echo $last ?> <?php echo ($portal_type == $key) ? 'portal_type': 'subscriptions-nav' ?>">
+                        <?php echo $name; ?>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+        <br />
+        <br />    
+        <div style="clear:both;"></div>
+    <!-- END PORTAL TYPES -->
+
+
+    <!-- START BUTTON TYPES -->
+    <?php 
+        $buttons = array("customers", "script", "survey");
+        $i = 0;
+        $count = count($buttons);
+        foreach ($buttons as $button) : 
+            $i++; 
+            $last = ($i == $count) ? "last" : "";
+            ?>  
+            <div class="<?php echo int_to_word($count); ?>col-one <?php echo $last; ?> call-flow" id="<?php echo $button; ?>">
+                <h4><?php echo ucwords($button); ?></h4>
             </div>
-        </a>
-        <a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=failed">
-            <div class="fourcol-one <?php echo ($portal_type == 'failed') ? 'portal_type': 'subscriptions-nav' ?>">
-                Failed Orders
-            </div>
-        </a>
-        <a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=expired">
-            <div class="fourcol-one <?php echo ($portal_type == 'expired') ? 'portal_type': 'subscriptions-nav' ?>">
-                Expired Cards
-            </div>
-        </a>
-        <a href="<?php echo get_option('siteurl') ?>/portal/?portal_type=signup">
-            <div class="fourcol-one last <?php echo ($portal_type == 'signup') ? 'portal_type': 'subscriptions-nav' ?>">
-               Signups
-            </div>
-        </a>
+        <?php endforeach; ?>
         
         <div style="clear:both;"></div>
-        
-        <div class="threecol-one call-flow" id="customer">
-            <h4>Customers</h4>
-        </div>
-        <div class="threecol-one call-flow" id="script">
-            <h4>Script</h4>
-        </div>
-        <!-- <div class="fourcol-one call-flow" id="order">
-            <h4>Order</h4>  
-        </div> -->
-        <div class="threecol-one last call-flow" id="survey">
-            <h4>Survey</h4> 
-        </div>
-        <div style="clear:both;"></div>
-        <div id="customer_content">
-            <?php echo get_customers($portal_type); ?>
-        </div>
-        
-        <div id="script_content" style="display:none;">
-            <?php echo get_script($portal_type); ?>
-        </div>
-        
-        <div id="order_content" style="display:none;">
-            <h4>Here is where you can place an order</h4>
-            <?php echo get_orders($portal_type); ?>
-        </div>
-        
-        <div id="survey_content" style="display:none;">
-            <h4>Here is where you can submit a survey</h4>
-            <?php echo get_survey($portal_type); ?>
-        </div>
+        <?php $i = 0; ?>
+        <?php foreach ($buttons as $button) : ?>
+            <?php $get_button = "get_" . $button; ?>
+            <div id="<?php echo $button ?>_content" <?php echo ($i >= 1) ? 'style="display:none;"' : ''; ?>> 
+                <?php echo $get_button($portal_type); ?>
+            </div>
+        <?php $i++; endforeach; ?>
+        <!-- END BUTTON TYPES -->
      
      </div>
+     
+     <script type="text/javascript">
+     // Show-Hide Content Divs
+         jQuery(document).ready(function($) {
+             // Create Array to hold number and id of buttons
+             var divs = new Array();
+             $('div .call-flow').each(function (index) {
+              divs.push($(this).attr("id"));    
+             });
+             // Show/Hide content divs
+             $('.call-flow').live("click", function() {
+                clicked_div = ($(this).attr("id"));
+                $.each(divs, function(i, val){
+                    if (val != clicked_div) {
+                        $('#' + val + '_content').hide();
+                        $('#' + clicked_div + '_content').show();
+                    }
+                });
+            });
+        });
+     </script>
      
      <script type="text/javascript">
         jQuery(document).ready(function($) {
@@ -163,7 +183,7 @@ global $current_user;
           $manage_subscriptions = get_option('manage_subscriptions');
           $manage_subscriptions_locked = get_option("manage_subscriptions_locked_{$portal_type}");
           $locked_ids = array();
-          $portal_types = array("reactivate", "failed", "expired", "signup" );
+          $portal_types = array("reactivate", "failed", "expired", "referral", "signup");
           if ($manage_subscriptions_locked) {
             foreach ($manage_subscriptions_locked as $user_id => $locked) {
               if ($user_id !=  wp_get_current_user()->ID) {
@@ -175,6 +195,7 @@ global $current_user;
           $locked_ids = (empty($locked_ids)) ?  "''" : implode(',', $locked_ids);          
                   
         switch ($portal_type) {
+            // Reactivate
             case $portal_types[0]:
                 unset($portal_types[0]);
                 $data = $wpdb->get_col("SELECT subs.subscription_id 
@@ -185,12 +206,10 @@ global $current_user;
                                           AND ((subs.contact_last IS NULL)
                                           OR (DATE(subs.contact_last) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."'))
                                           AND subs.subscription_id NOT IN (" . $locked_ids . ")
-                                          ORDER BY subs.cancel_reason DESC
+                                          ORDER BY subs.cancel_date DESC
                                           LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
-
-                                                  
             break;
-            
+            // Failed
             case $portal_types[1]:
                 unset($portal_types[1]);
                 $data = $wpdb->get_col("SELECT distinct(posts.ID) 
@@ -210,7 +229,7 @@ global $current_user;
                                             ORDER BY posts.post_date DESC 
                                             LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
             break;
-            
+            // Expired
             case $portal_types[2]:
                 unset($portal_types[2]);
                 $complete_search = check_expired_cards();
@@ -223,8 +242,22 @@ global $current_user;
                                             LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
             break;
             
+            // Referral
             case $portal_types[3]:
                 unset($portal_types[3]);
+                $data = $wpdb->get_col("SELECT DISTINCT(subs.subscription_id)
+                                            FROM {$wpdb->prefix}subscriptions subs
+                                            WHERE subs.status = 'active'
+                                            AND subs.subscription_id NOT IN (" . $locked_ids . ")
+                                            AND subs.subscription_id NOT IN 
+                                                (SELECT subscription_id FROM {$wpdb->prefix}subscriptionmeta WHERE meta_key = 'referral_contact')
+                                            ORDER BY subs.subscription_start DESC
+                                            LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
+            break;
+            
+            // Signup
+            case $portal_types[4]:
+                unset($portal_types[4]);
                 $data = $wpdb->get_col("SELECT ID
                                             FROM {$wpdb->posts} posts
                                             JOIN {$wpdb->postmeta} meta 
@@ -234,7 +267,7 @@ global $current_user;
                                             AND posts.post_status IN ('wc-processing', 'wc-completed')
                                             AND posts.ID NOT IN 
                                                 (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_new_signup')
-                                            AND meta.meta_key = 'free_pound'
+                                            AND meta.meta_key = 'subscription_welcome_id'
                                             ORDER BY posts.post_date DESC
                                             LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
             break;
@@ -252,7 +285,6 @@ global $current_user;
             unset($locked_options[wp_get_current_user()->ID]);
             
             update_option("manage_subscriptions_locked_{$type}", $locked_options);
-            
         }
         
         $manage_subscriptions_locked[wp_get_current_user()->ID] = array_keys(array_flip($data)); 
@@ -307,4 +339,20 @@ global $current_user;
              
         return $complete_search; 
         
+    }
+    
+    function int_to_word($int = 0) {
+        
+        switch ($int) {
+            case 1: $int = "one";   break;
+            case 2: $int = "two";   break;
+            case 3: $int = "three"; break;
+            case 4: $int = "four";  break;
+            case 5: $int = "five";  break;
+            case 6: $int = "six";   break;
+            case 7: $int = "seven"; break;
+            case 8: $int = "eight"; break;
+            case 9: $int = "nine";  break;
+        }
+        return $int;
     }

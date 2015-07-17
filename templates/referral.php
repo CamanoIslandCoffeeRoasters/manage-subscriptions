@@ -99,7 +99,7 @@
 		<?php
 	}
 	
-	function reactivate_table($portal_type) {
+	function referral_table($portal_type) {
 		?>
 		
 		<?php global $woocommerce, $wpdb;
@@ -117,8 +117,8 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Cancel Date</th>
-                    <th>Cancel Reason</th>
+                    <th>Signup</th>
+                    <th>Source</th>
                     <th>Actions</th>
                </thead>
                <?php
@@ -148,12 +148,12 @@
                               <?php echo str_replace(array('-', '.', ' ', '(', ')'), '', $phone); ?>
                          </td>
                          <td id="sub_cancel_date">
-                              <?php echo date('m/d/Y', strtotime($subscription->cancel_date)); ?>
+                              <?php echo date('m/d/Y', strtotime($subscription->subscription_start)); ?>
                          </td>
                          <td id="sub_cancel_reason" class="<?php  ?>" >
-                              <span title="<?php echo $failed_reason; ?>"><?php echo $subscription->cancel_reason; ?></span>
+                              <span><?php echo $subscription->source;   ?></span>
                          </td>
-                         <td class="action" id="<?php echo $subscription_id; ?>">
+                         <td class="action" id="<?php echo $subscription_id;  ?>">
                               <a class="actions" href"">Open
                               </a>
                          </td>
@@ -173,29 +173,26 @@
                $('.action').live('click', function() {
                     subscription_id = $(this).attr("id");
                     order_email = $(this).find(".order_email").text();
-                    console.log(order_email);
                     exists = $("#failed_order_"+subscription_id);
                     
                     $('[id^="failed_order_"]').remove();
                     if (exists.length == 0) {
                          $(this).html("Cancel");
-                         $(this).parent().after('<tr id="failed_order_'+subscription_id+'"> \
+                         $(this).parent().slideDown("slow").after('<tr id="failed_order_'+subscription_id+'"> \
                                                   <td colspan="7"> \
                                                        <div id=""> \
                                                             <form name="form_failed_'+subscription_id+'" id="form_failed" action="" method="POST"> \
                                                             <div class="sixcol-two" style="margin-bottom:0% !important;"> \
                                                                  <select style="width:50%" name="disposition" id="disposition" required="required"> \
-                                                                      <option value=""> Reactivated? </option> \
-                                                                      <option value="yes"           >Yes</option> \
-                                                                      <option value="moreinfo"      >More Info</option> \
-                                                                      <option value="no"            >No</option> \
-                                                                      <option value="remove"        >No - Remove</option> \
-                                                                      <option value="noanswer"      >No Answer</option> \
-                                                                      <option value="unreachable"   >Unreachable</option> \
+                                                                      <option value=""              > - - Outcome - - </option> \
+                                                                      <option value="note"          >Note</option> \
+                                                                      <option value="email"         >Email</option> \
+                                                                      <option value="none"          >None</option> \
+                                                                      <option value="remove"        >Remove</option> \
                                                                  </select> \
                                                             </div> \
                                                              <div class="sixcol-three" style="margin-bottom:0% !important;"> \
-                                                                 <textarea name="email_content" id="email" rows="15" cols="50"></textarea> \
+                                                                 <textarea name="email_content" id="email" rows="10" cols="50"></textarea> \
                                                             </div> \
                                                             <div class="sixcol-one last" style="margin-bottom:0% !important;"> \
                                                                  <input name="sub" id="submit_reactivation" type="submit" value="submit" /> \
@@ -238,35 +235,20 @@
                     }
                     
                     switch ($(this).val()) {
-                         case "yes":
-                              $('#email').val('Hi '+first_name+',\n\nIt was great to chat with you today. I\'m so glad we could get you all set up with the Coffee Lover\'s Club again.\n\nJust to review, we\'ve got you in the %SUBSCRIPTION_TYPE%, set to ship out on %SHIPDATE% and with a frequency of %FREQUENCY% weeks. Like I said on the phone, your first order will be $%DISCOUNT% off. After that, your subsequent shipments will be the regular club price of $%SUBSCRIPTION_PRICE%.\n\nWe\'re so glad to have you back in the Coffee Lover\'s Club. If you have any further questions or needs, please give our Customer Care department a call at <?php echo $woo_options['woo_contact_number']; ?>, or you can make edits to your subscription at this url: <?php echo site_url( '/my-account' ); ?> .\n\nThank you for choosing to make a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday, 7AM - 5PM PST');
-                              $('#disposition').after('<div id="after_disposition"><br /> \
-                                                            <div class="" style="margin-bottom:0% !important;"> \
-                                                                 <input type="date" name="next_shipment" id="next_shipment" value="<?php echo date("Y-m-d", strtotime("+1 day")); ?>" /> \
-                                                                 <input type="number" name="one_time_deduction" step="any" id="one_time_deduction" placeholder="Add discount?"  value="" /> \
-                                                            </div> \
-                                                       </div> \
-                                                       '); 
+                         case "note":
+                              $('#email').show().val('').prop("placeholder" , 'Insert note regarding call outcome . . . ');
                          break;
                          
-                         case "moreinfo":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback. Per your request for more information, I’ve included the details of our Coffee Lover’s Club below.\n\nWe offer three types of memberships in the Coffee Lover’s Club. The 2lb Club, which is $34.99 per shipment. The 3lb Club, which is $44.99 per shipment. And the 4lb Club, which is $52.99 per shipment.\n\nAs a member you’ll still enjoy these member-only perks:\n\n~ Free Shipping\n~ Custom Shipping Frequency from 2 - 10 weeks\n~ Access to ALL of our Freshly Roasted, Organic, Shade-Grown Coffees\n~ Club price discount.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                         case "email":
+                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about our referral program, where you get $20 for each person you refer for a subscription. They simply include your name on checkout, and we take care of the rest. They get $20 off their first order, and you get $20 off your next shipment.\n\nThank you and from all of us here at <?php echo get_option('blogname') ?>, have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
                          break;
                          
-                         case "no":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.  Be sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                         case "none":
+                              $('#email').hide('');
                          break;
                          
                          case "remove":
-                              $('#email').val('Hi '+first_name+',\n\nThank you for taking my call today. We know how valuable your time is and appreciate that you took a few minutes to give us some feedback.\n\nWe have removed you from our call list. You will not receive any more calls unless you decide to rejoin the Coffee Lover’s Club.\n\nIf you decide you would like to rejoin, please feel free to give us a call at our customer care number: <?php echo $woo_options['woo_contact_number']; ?>.\n\nBe sure to mention the 50% off discount we discussed on the phone, and we will gladly honor it for you.\n\nFrom all of us here at <?php echo get_option('blogname') ?>,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                         break;
-                         
-                         case "noanswer":
-                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here at <?php echo get_option('blogname') ?>, have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
-                         break;
-                         
-                         case "unreachable":
-                              $('#email').val('Hi '+first_name+',\n\nMy name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I tried giving you a call earlier today, but seemed to have missed you.\n\nAnyway, I was calling to let you know about a special offer we’re extending to all of our former Coffee Lovers Club members. We’d love to have you back. To show you how much we want to give you 50% off your next shipment when you rejoin the Coffee Lover’s Club.\n\nJust give us a call back at our customer care number <?php echo $woo_options['woo_contact_number']; ?> and be sure to mention the 50% off rejoin discount.\n\nThank you and from all of us here at <?php echo get_option('blogname') ?>, have a great day.\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                              $('#email').show().val('Removed from call list after Referral Call');
                          break;
                          
                          default: "";
@@ -280,7 +262,6 @@
                     caller_name = $(this).attr('data-caller-name');
                     $.getJSON("http://sip.camanoislandmanagement.com/call.php?exten="+extension+"&number="+number+"&caller_name="+caller_name+"", function() {});
                 });
-               
                
                $('#holiday-banner').hide();
                $('#footer-widgets-container').hide();
