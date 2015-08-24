@@ -27,7 +27,7 @@
           case "yes":
                $note_title = "Portal Reactivation";
                $note_content = strtok($subscription->name, " ") . " Reactivated!";
-               $note_type = "reactivated";
+               $note_type = "reactivate";
                $mail_subject = $site_title . ': Account Updated';
                
                Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'status', 'active' );
