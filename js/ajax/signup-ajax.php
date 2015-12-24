@@ -3,7 +3,7 @@
     require( $_SERVER['DOCUMENT_ROOT'].'/wp-load.php' );
     global $woocommerce;
     
-    $site_title = get_option('blogname');
+    $site_title = htmlspecialchars_decode(get_option('blogname'));
     $user           = isset($_POST['user'])             ? $_POST['user']            : '';
     $order_id       = isset($_POST['order_id'])         ? $_POST['order_id']        : '';
     $subscription_id= isset($_POST['subscription_id'])  ? $_POST['subscription_id'] : '';

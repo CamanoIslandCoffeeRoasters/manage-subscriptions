@@ -6,7 +6,7 @@
 	text-align:center;
 	border-radius:10px;
 	padding: 4px 0 4px 0;
-	
+
 	border: 0;
 	background: #85AAB1;
 	border-radius: 4px;
@@ -43,7 +43,7 @@ td > .call-flow {
 	text-align:center;
 	padding: 4px 0 4px 0;
 	font-size:1.4em;
-	
+
 	border: 0;
 	border-radius: 4px;
 	box-shadow: 0 3px 0 #291908;
@@ -82,18 +82,18 @@ td > .call-flow {
 #subscriptions_container .subscriptions-nav a:hover {
 	color: #fff;
 	}
-	
+
 .portal_table tr td {
 	margin:10px;
 	padding:8px;
-	box-shadow: inset 0 0 2px #000, inset 0 0 2px #000, inset 0 0 2px #000;
+	/*box-shadow: inset 0 0 2px #000, inset 0 0 2px #000, inset 0 0 2px #000;*/
 }
 
-.portal_table tr td.expired {
+.portal_table tr td.expired, div.script h2.expired {
 	color:green;
 }
 
-.portal_table tr td.declined {
+.portal_table tr td.declined,div.script h2.declined {
 	color:red;
 }
 
@@ -101,8 +101,17 @@ td > .call-flow {
 	text-align:center;
 }
 
-.portal_table tr td a.actions {
+.portal_table tr td.action .actions.open {
 	background-color:#85AAB1;
+	color:white;
+	text-align:center;
+	padding:4px 9px 4px 9px;
+	border-radius:7px;
+	font-size:1.2em;
+}
+
+.portal_table tr td.action .actions.close {
+	background-color:#d43d3d;
 	color:white;
 	text-align:center;
 	padding:4px 9px 4px 9px;
@@ -114,4 +123,30 @@ select {
 	font-size:1.1em;
 	border-radius: 9px;
 	padding:2px;
+}
+
+
+.breadcrumb {
+	border-bottom: '';
+}
+#holiday-banner {
+	display:none;
+}
+#footer-widgets-container {
+	display:none;
+}
+.breadcrumb-trail {
+	display:none;
+}
+.woo-breadcrumbs {
+	display:none;
+}
+.menu-item {
+	display:none;
+}
+.cart {
+	display:none;
+}
+.contact_callback {
+	background-color:rgb(229, 225, 232);
 }

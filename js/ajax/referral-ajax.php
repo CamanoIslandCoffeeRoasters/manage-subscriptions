@@ -4,7 +4,7 @@
 	
      global $woocommerce;
      
-     $site_title = get_option('blogname');
+     $site_title = htmlspecialchars_decode(get_option('blogname'));
      
      $added_by           = isset($_POST['user'])                 ? $_POST['user']              : '';
      $subscription_id    = isset($_POST['subscription_id'])      ? $_POST['subscription_id']   : '';
