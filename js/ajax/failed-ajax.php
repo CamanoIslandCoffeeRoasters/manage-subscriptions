@@ -107,7 +107,7 @@
 	if ($disposition != "unreachable") :
 
 	   $greeting = (current_time('H') > 12) ? "Good Afternoon " : "Good Morning ";
-	   $mailer->send( 'tobin.fekkes@camanoislandmanagement.com', $mail_subject, $mailer->wrap_message("<img src='http://camanoislandcoffee.com/wp-content/uploads/2014/06/CICR-Logo-Color1.png' style='width:175px;margin-left:auto;margin-right:auto;'/>", '<h2> ' .  $greeting . ucwords($_order->billing_first_name) . ',</h2><br /><br />' .  $email_content ), '', '' );
+	   $mailer->send( $mail_email, $mail_subject, $mailer->wrap_message("<img src='http://camanoislandcoffee.com/wp-content/uploads/2014/06/CICR-Logo-Color1.png' style='width:175px;margin-left:auto;margin-right:auto;'/>", '<h2> ' .  $greeting . ucwords($_order->billing_first_name) . ',</h2><br /><br />' .  $email_content ), '', '' );
 	endif;
 
 

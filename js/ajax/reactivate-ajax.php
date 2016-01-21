@@ -10,13 +10,13 @@
 	$subscription_id    = isset($_POST['subscription_id'])      ? $_POST['subscription_id']   : '';
 	$email_content      = isset($_POST['email_content'])        ? $_POST['email_content']     : '';
 	$disposition        = isset($_POST['disposition'])          ? $_POST['disposition']       : '';
-	$one_time_deduction = isset($_POST['one_time_deduction'])   ? $_POST['one_time_deduction']: '';
+	$one_time_discount = isset($_POST['one_time_discount'])   ? $_POST['one_time_discount']: '';
 	$next_shipment      = isset($_POST['next_shipment'])        ? $_POST['next_shipment']     : '';
 	$contact_callback	= isset($_POST['contact_callback']) 	? $_POST['contact_callback']  : '';
 
 	Subscriptions_Subscribers::delete_subscription_meta($subscription_id, 'contact_callback');
 	$subscription = Subscriptions_Subscribers::get_subscription(NULL, $subscription_id);
-	$one_time_deduction += $subscription->one_time_deduction;
+	$one_time_discount += $subscription->one_time_discount;
 
 	// Replace Line Breaks with HTML Breaks
 	$email_content = str_replace("\n", "<br />", $email_content);
@@ -35,8 +35,8 @@
                // Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'status', 'active' );
                Subscriptions_Subscribers::reactivate_subscription($subscription_id);
 
-               if (isset($one_time_deduction)) {
-                    Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'one_time_deduction', $one_time_deduction );
+               if (isset($one_time_discount)) {
+                    Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'one_time_discount', $one_time_discount );
                }
                if (isset($next_shipment)) {
                     Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'next_shipment', $next_shipment );
@@ -51,7 +51,7 @@
 			// Populate Frequency
 			$email_content = str_replace('%SHIPDATE%', date('m/d/Y', strtotime($subscription->next_shipment)), $email_content);
 			// Populate Discount
-			$email_content = str_replace('%DISCOUNT%', $subscription->one_time_deduction, $email_content);
+			$email_content = str_replace('%DISCOUNT%', $subscription->one_time_discount, $email_content);
 			// Populate Subscription Price
 			$discount = Subscriptions_Subscribers::get_subscription_total($subscription->products, $subscription->discount);
 			$email_content = str_replace('%SUBSCRIPTION_PRICE%', $discount, $email_content);
@@ -134,7 +134,7 @@
 
 
 	  $greeting = (current_time('H') > 12) ? "Good Afternoon " : "Good Morning ";
-	  $mailer->send( 'tj.fittis@camanoislandmanagement.com', $mail_subject, $mailer->wrap_message("<img src='http://camanoislandcoffee.com/wp-content/uploads/2014/06/CICR-Logo-Color1.png' style='width:175px;margin-left:auto;margin-right:auto;'/>", '<h2> ' .  $greeting . ucwords(strtok($subscription->name, " ")) . ',</h2><br /><br />' .  $email_content ), '', '' );
+	  $mailer->send( $subscription->email, $mail_subject, $mailer->wrap_message("<img src='http://camanoislandcoffee.com/wp-content/uploads/2014/06/CICR-Logo-Color1.png' style='width:175px;margin-left:auto;margin-right:auto;'/>", '<h2> ' .  $greeting . ucwords(strtok($subscription->name, " ")) . ',</h2><br /><br />' .  $email_content ), '', '' );
      }
 
 ?>

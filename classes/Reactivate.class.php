@@ -189,7 +189,7 @@
                                       $('#disposition').after('<div id="after_disposition"><br /> \
                                                                     <div class="" style="margin-bottom:0% !important;"> \
                                                                          <input type="date" name="next_shipment" id="next_shipment" value="<?php echo date("Y-m-d", strtotime("+1 day")); ?>" /> \
-                                                                         <input type="number" name="one_time_deduction" step="any" id="one_time_deduction" placeholder="Add discount?"  value="" /> \
+                                                                         <input type="number" name="one_time_discount" step="any" id="one_time_discount" placeholder="Add discount?"  value="" /> \
                                                                     </div> \
                                                                </div> \
                                                                ');
