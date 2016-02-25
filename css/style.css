@@ -108,6 +108,7 @@ td > .call-flow {
 	padding:4px 9px 4px 9px;
 	border-radius:7px;
 	font-size:1.2em;
+	cursor:pointer;
 }
 
 .portal_table tr td.action .actions.close {
@@ -117,6 +118,7 @@ td > .call-flow {
 	padding:4px 9px 4px 9px;
 	border-radius:7px;
 	font-size:1.2em;
+	cursor:pointer;
 }
 
 select {

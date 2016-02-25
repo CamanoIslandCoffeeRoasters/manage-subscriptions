@@ -10,7 +10,7 @@
 	$subscription_id    = isset($_POST['subscription_id'])      ? $_POST['subscription_id']   : '';
 	$email_content      = isset($_POST['email_content'])        ? $_POST['email_content']     : '';
 	$disposition        = isset($_POST['disposition'])          ? $_POST['disposition']       : '';
-	$one_time_discount = isset($_POST['one_time_discount'])   ? $_POST['one_time_discount']: '';
+	$one_time_discount 	= isset($_POST['one_time_discount'])   	? $_POST['one_time_discount'] : '';
 	$next_shipment      = isset($_POST['next_shipment'])        ? $_POST['next_shipment']     : '';
 	$contact_callback	= isset($_POST['contact_callback']) 	? $_POST['contact_callback']  : '';
 
@@ -98,9 +98,8 @@
                $note_content = strtok($subscription->name, " ") . " asked to be removed from the calling list.";
                $note_type = "remove";
 
+			   Subscriptions_Subscribers::add_subscription_meta($subscription_id, 'portal_remove', 'true');
                Subscriptions_Subscribers::update_subscription($subscription->email, $subscription_id, 'cancel_reason', 'remove');
-               // Email
-               $mail_subject = $site_title . ': Removed';
 
           break;
 
@@ -108,9 +107,6 @@
                // Notes
                $note_title = "No Answer";
                $note_content = "Unable to get a hold of " . strtok($subscription->name, " ") . "";
-
-               // Email
-               $mail_subject = $site_title . '';
 
           break;
 
@@ -130,7 +126,7 @@
      Subscriptions_Notifications::add_subscription_note($subscription_id, $subscription->email, $note_title, $note_content, $added_by, $note_type);
 
 
-     if ($disposition != 'unreachable') {
+     if (!in_array($disposition, array('unreachable', 'remove', 'noanswer') ) ) {
 
 
 	  $greeting = (current_time('H') > 12) ? "Good Afternoon " : "Good Morning ";

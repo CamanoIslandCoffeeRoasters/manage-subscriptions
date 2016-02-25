@@ -174,15 +174,15 @@ if (!class_exists("Manage_Subscriptions")) {
         public function get_row_data_from_type($data_type, $id) {
             if (!$data_type || !$id) return;
             global $woocommerce;
-
+            // return Order object
             if ($data_type == "order") {
                 return new WC_Order($id);
             }
-
+            // return Subscription object
             elseif ($data_type == "subscription") {
                 return Subscriptions_Subscribers::get_subscription(NULL, $id);
             }
-
+            // return User object
             elseif ($data_type == "user") {
                 return new WP_User($id);
             }
@@ -190,15 +190,15 @@ if (!class_exists("Manage_Subscriptions")) {
 
         public static function get_row_id($data_type, $data) {
             if (!$data_type || !$data) return;
-
+            // Return order_id
             if ($data_type == "order") {
                 return $data->id;
             }
-
+            // Return subscription_id
             elseif ($data_type == "subscription") {
                 return $data->subscription_id;
             }
-
+            // return user_id
             elseif ($data_type == "user") {
                 return $data->ID;
             }
@@ -263,42 +263,54 @@ if (!class_exists("Manage_Subscriptions")) {
 
 
         public function get_data( $portal_type = "" ) {
-            global $wpdb;
+              global $wpdb;
+              // Get array of user_specific options from the Admin Options, i.e. num rows, days since failed/canceled, portal_types to display
               $manage_subscriptions = get_option("manage_subscriptions_" . get_current_user_id());
+              // Get current portal_type array of locked IDs
               $manage_subscriptions_locked = get_option("manage_subscriptions_locked_{$portal_type}");
               $locked_ids = array();
+              // Load all available portal_types
               $portal_types = array_keys($this->init_portal_types);
+              // If there are locked IDs
               if ($manage_subscriptions_locked) {
-                foreach ($manage_subscriptions_locked as $user_id => $locked) {
-                  if ($user_id !=  wp_get_current_user()->ID) {
-                      $locked_ids = array_merge($locked_ids, $locked);
-
+                  // Loop through each user_id present in locked array
+                  foreach ($manage_subscriptions_locked as $user_id => $locked) {
+                      // If the user_id doesn't equal the current user, append all locked IDs to a global array
+                      if ($user_id !=  wp_get_current_user()->ID) {
+                          // all $locked_ids in options_table for this portal type are merged together into one array
+                          $locked_ids = array_merge($locked_ids, $locked);
+                      }
                   }
-                }
               }
+              // $locked_ids is imploded (comma-separated) and inserted into below SQL so they're filtered out of the query
               $locked_ids = (empty($locked_ids)) ?  "''" : implode(',', $locked_ids);
 
-            switch ($portal_type) {
+              switch ($portal_type) {
                 // Reactivate
                 case $portal_types[0]:
                     unset($portal_types[0]);
                     $data = $wpdb->get_col("SELECT subs.subscription_id
-                                              FROM  " . $wpdb->prefix . "subscriptions subs
+                                              FROM " . $wpdb->prefix . "subscriptions subs
+                                              LEFT JOIN " . $wpdb->prefix . "subscriptionmeta meta
+                                                ON ((subs.subscription_id = meta.subscription_id)
+                                                AND (meta_key = 'portal_remove'))
                                               WHERE subs.status = 'canceled'
                                               AND subs.cancel_reason != 'remove'
+                                              AND (meta.meta_value IS NULL OR meta.meta_value != 'true')
                                               AND subs.cancel_date < '". date('Y-m-d', strtotime('-' . $manage_subscriptions['cancel_date']. ' days')). "'
                                               AND ((subs.contact_last IS NULL)
                                               OR (DATE(subs.contact_last) < '" . date('Y-m-d', strtotime('-' . $manage_subscriptions['contact_last_subscription'].' days'))."'))
                                               AND subs.subscription_id NOT IN (" . $locked_ids . ")
                                               ORDER BY subs.cancel_date DESC
-                                              LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
+                                              LIMIT 0, ". $manage_subscriptions['num_rows']
+                                          );
 
                     $callbacks = $wpdb->get_col("SELECT subs.subscription_id
                                                FROM " . $wpdb->prefix . "subscriptions subs
                                                JOIN " . $wpdb->prefix . "subscriptionmeta meta
                                                   ON subs.subscription_id = meta.subscription_id
                                                WHERE meta.meta_key = 'contact_callback'
-                                               AND DATE(meta.meta_value) < '" . date("Y-m-d") . "'
+                                               AND DATE(meta.meta_value) <= '" . date("Y-m-d") . "'
                                            ");
 
                     $this->callbacks = $callbacks;
@@ -310,19 +322,20 @@ if (!class_exists("Manage_Subscriptions")) {
                     $data = $wpdb->get_col("SELECT distinct(posts.ID)
                                                 FROM {$wpdb->posts} posts
                                                 LEFT JOIN {$wpdb->postmeta} meta
-                                                     ON meta.post_id = posts.ID
+                                                     ON ((meta.post_id = posts.ID) AND (meta.meta_key = 'contact_last'))
                                                 LEFT JOIN {$wpdb->postmeta} meta2
-                                                     ON meta2.post_id = posts.ID
+                                                     ON ((meta2.post_id = posts.ID) AND (meta2.meta_key = 'contact_amount'))
+                                                LEFT JOIN {$wpdb->postmeta} meta3
+                                                     ON ((meta3.post_id = posts.ID) AND (meta3.meta_key = 'portal_remove'))
                                                 WHERE posts.post_type = 'shop_order'
                                                 AND posts.post_status = 'wc-failed'
-                                                AND posts.ID NOT IN (" . $locked_ids . ")
-                                                AND ((meta.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_last'))
-                                                OR (meta.meta_key = 'contact_last'
-                                                    AND ((meta2.post_id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'contact_amount'))
-                                                OR (meta2.meta_key = 'contact_amount' AND meta2.meta_value <= 3 ))
-                                                    AND DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['contact_last_order'].' days')). "'))
+                                                AND (meta3.meta_value IS NULL)
+                                                AND posts.ID NOT IN ('$locked_ids')
+                                                AND ((meta.meta_value IS NULL) OR (DATE(meta.meta_value) < '" . date('Y-m-d', strtotime('-'.$manage_subscriptions['contact_last_order'].' days')). "'))
+                                                AND ((meta2.meta_value IS NULL) OR ( meta2.meta_value <= 3))
                                                 ORDER BY posts.post_date DESC
-                                                LIMIT 0, ". $manage_subscriptions['num_rows'] . "");
+                                                LIMIT 0, ". $manage_subscriptions['num_rows']
+                                            );
 
                     $callbacks = $wpdb->get_col("SELECT post_id
                                                FROM {$wpdb->postmeta} meta
@@ -377,25 +390,25 @@ if (!class_exists("Manage_Subscriptions")) {
                 default: $data = "";
                 break;
             }
-
+            // Merge the callback IDs array into the queried IDs array
             $data = isset($callbacks) ? $data = array_merge($callbacks, $data) : $data;
-
+            // Loop through each protal type that's NOT the one being loaded right now (it was unset() above)
             foreach ($portal_types as $type) {
 
                 $locked_options = array();
-
+                // Grab the array of locked IDs for the current portal_type
                 $locked_options = get_option("manage_subscriptions_locked_{$type}");
-
+                // Remove any that are saved by this user_id
                 unset($locked_options[wp_get_current_user()->ID]);
-
+                // Save the updated array back to the options table
                 update_option("manage_subscriptions_locked_{$type}", $locked_options);
             }
-
+            // Array_flip to put the values (IDs) of $data into the key position, then array_keys to grab only the keys, and save to array marked by the signed-in user
             $manage_subscriptions_locked[wp_get_current_user()->ID] = array_keys(array_flip($data));
-
+            // Save the IDs to the options table, to lock the queried IDs from being queried by another user
             update_option("manage_subscriptions_locked_{$portal_type}",$manage_subscriptions_locked);
-
-            return $data;
+            // Return array of IDs to the Display class, filtering out any duplicates between the original query and the callback query
+            return array_unique($data, SORT_NUMERIC );
         }
 
         public function get_failed_reason($order_id){
@@ -592,7 +605,6 @@ if (!class_exists("Manage_Subscriptions")) {
                             dataType: 'JSON'
                         })
                         .done(function(data) {
-                            console.log(data);
                             // Remove the parent tr
                             $('#'+row_id).remove();
                             // Remove the child, action tr
@@ -605,6 +617,7 @@ if (!class_exists("Manage_Subscriptions")) {
                     $('.portal_table').on('submit', '#form_row', function(event) {
                         $('input[type="submit"]').val("Saving . . ").attr("disabled", true);
                     });
+                    $('')
                 });
          </script>
      <?php

@@ -83,7 +83,14 @@
 			$message = json_encode(array("email"	=> "emailed!" ));
 
 			$mail_email = $_order->billing_email;
-			$mail_subject = $site_title . ': Response Requested';
+			$mail_subject = $site_title;
+		break;
+
+		case "remove":
+
+			$_order->add_order_note("Removed from Portal");
+			add_post_meta($order_id, 'portal_remove', 'true');
+			$message = json_encode(array("removed"	=> "remove" ));
 		break;
 
 		case "unreachable":
@@ -104,7 +111,7 @@
 	echo $message;
 
 	// Send Email to Customer
-	if ($disposition != "unreachable") :
+	if (!in_array($disposition, array('unreachable', 'remove')) ) :
 
 	   $greeting = (current_time('H') > 12) ? "Good Afternoon " : "Good Morning ";
 	   $mailer->send( $mail_email, $mail_subject, $mailer->wrap_message("<img src='http://camanoislandcoffee.com/wp-content/uploads/2014/06/CICR-Logo-Color1.png' style='width:175px;margin-left:auto;margin-right:auto;'/>", '<h2> ' .  $greeting . ucwords($_order->billing_first_name) . ',</h2><br /><br />' .  $email_content ), '', '' );

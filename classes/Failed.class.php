@@ -138,7 +138,6 @@
 			             if (exists.length == 0) {
                             row = $(this).parent();
                             email = $(this).parent().find(".row_email").text();
-                            console.log(email);
                             $('span.actions', this).removeClass('open').addClass('close').text("Cancel");
         					$(this).parent().after('<tr id="row_'+row_id+'"> \
         												<td colspan="7"> \
@@ -152,6 +151,8 @@
         																<option value="canceled">Cancel Subscription</option> \
         																<option value="email">Email</option> \
                                                                         <option value="callback">Callback</option> \
+                                                                        <option value="updated_card">Updated Card</option> \
+                                                                        <option value="remove">Remove</option> \
         																<option value="unreachable">Unreachable</option> \
         															</select> \
         														</div> \
@@ -184,17 +185,17 @@
 
         				switch ($(':selected', this).val()) {
         					case "updated":
-        						$('#email').val('Thank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: <?php echo site_url( '/my-account' ); ?> .\n\nAlso, if you need any help with your account, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+        						$('#email').val('Thank you for taking my call today. I’m glad we were able to update your card. If you need to make any future edits to your account, you can do so in your account at this url: <?php echo site_url( '/my-account' ); ?> .\n\nAlso, if you need any help with your account, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you again for being a loyal Coffee Lover’s Club member. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
         					break;
 
         					case "voicemail":
-        						$('#email').val('My name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?> at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+        						$('#email').val('My name is <?php echo $current_user->data->display_name; ?> with <?php echo get_option('blogname') ?>. I left you a quick voicemail regarding your account.\n\nYour card on file is declining your latest Coffee Lover’s Club shipment. Please give us a call back at <?php echo $woo_options['woo_contact_number']; ?> at your earliest convenience.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you, we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee. You can buy your coffee anywhere, but with <?php echo get_option('blogname') ?> you’re deciding to make a difference with your coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
         					break;
 
         					case "canceled":
-        						$('#email').val('Thank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+        						$('#email').val('Thank you for taking my call today. I have canceled your Coffee Lover’s Club. You will no longer receive any new orders.\n\nWhen you decide to restart your Coffee Lover’s Club subscription, please give us a call at <?php echo $woo_options['woo_contact_number']; ?>.\n\nThank you for choosing to make a difference with your daily cup of coffee. Thanks to coffee lovers like you we’ve been able to help build 42 villages and impact 24,000 people with just your daily cup of coffee.\nWe hope you’ll rejoin us in the not too distant future.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
         						$('#disposition').after('<br /><br /> \
-        												<select name="cancel_reason" id="cancel_reason" style="width:100%" required="required"> \
+        												<select name="cancel_reason" id="cancel_reason" style="width:100%;" required="required"> \
         													<option value=""> -- REASON FOR CANCELING -- </option> \
         													<option value="billing">Billing</option> \
         													<option value="death">Death</option> \
@@ -216,11 +217,11 @@
         					break;
 
         					case "email":
-        						$('#email').val('There seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+        						$('#email').val('There seems to be an issue with the payment profile on your account. We have been unable to reach by phone, so if you could give us a call at <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
         					break;
 
                             case "callback":
-                                $('#email').val('We\'re going to call you back on this date: <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 5PM PST');
+                                $('#email').val('We\'re going to call you back on this date: <?php echo $woo_options['woo_contact_number']; ?>, we would greatly appreciate it.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
                                 $('#disposition').after('<div id="contact_callback"> \
                                                             <br /><br /> \
                                                             <input type="text" class="date-picker" name="contact_callback" value="<?php echo date('m/d/Y',strtotime('+ 1 week')); ?>" > \
@@ -228,6 +229,14 @@
                                                         ');
                                 $('.date-picker').datepicker({numberOfMonths:[1,1]});
                             break;
+
+                            case "updated_card":
+        						$('#email').val('Thank you for updating your card in your account. Your order is now processing and will ship out on our next available shipping day. Everything looks good to go and your coffee will be on its way shortly!\n\nThank you for partnering with us in making a difference with your daily cup of coffee.\n\nSincerely,\n<?php echo $current_user->data->display_name; ?>\nPhone: <?php echo $woo_options['woo_contact_number']; ?>\nMonday - Friday 7AM - 4PM PST');
+        					break;
+
+                            case "remove":
+        						$('#email').val('Removed from Portal');
+        					break;
 
         					case "unreachable":
         						$('#email').val('Customer Unreachable.');
